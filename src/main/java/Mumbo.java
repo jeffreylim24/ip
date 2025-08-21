@@ -38,7 +38,7 @@ public class Mumbo {
                         if (index > 0 && index <= list.size()) {
                             Task task = list.get(index - 1);
                             task.mark(true);
-                            System.out.println(line + "\nNice! I've marked this task as done.\n" + task);
+                            System.out.println(line + "\nNice! I've marked this task as done.\n" + task + "\n" + line);
                         } else {
                             System.out.println(line + "\nError: " + argument + " is not a valid input.\n" + line);
                         }
@@ -53,7 +53,7 @@ public class Mumbo {
                         if (index > 0 && index <= list.size()) {
                             Task task = list.get(index - 1);
                             task.mark(false);
-                            System.out.println(line + "\nOk, I've marked this task as not done yet:\n" + task);
+                            System.out.println(line + "\nOk, I've marked this task as not done yet:\n" + task + "\n" + line);
                         } else {
                             System.out.println(line + "\nError: " + argument + " is not a valid input.\n" + line);
                         }
