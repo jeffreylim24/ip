@@ -1,29 +1,141 @@
 ____________________________________
+Hello! ? I'm Mumbo!
+What can I do for you?
+***** EXPECTED.TXT
+____________________________________
+Hello! I'm Mumbo!
+What can I do for you?
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [T][ ] read book
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [T][ ] read book
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [D][ ] return book (by: June 6th)
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [D][ ] return book (by: June 6th)
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [T][ ] join sports club
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [T][ ] join sports club
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [T][ ] borrow book
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [T][ ] borrow book
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [T][ ] borrow book
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [T][ ] borrow book
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [D][ ] return book (by: Sunday)
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [D][ ] return book (by: Sunday)
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [E][ ] project meeting (from: Mon 2pm to: 4pm)
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [E][ ] project meeting (from: Mon 2pm to: 4pm)
+*****
+
+***** ACTUAL.TXT
+____________________________________
+? Got it! I've added this task:
+ [D][ ] do homework (by: no idea :-P)
+***** EXPECTED.TXT
+____________________________________
+Got it. I've added this task:
+ [D][ ] do homework (by: no idea :-P)
+*****
+
+***** ACTUAL.TXT
+____________________________________
+Bye. Hope to see you again soon! ?
+____________________________________
+***** EXPECTED.TXT
+____________________________________
+Bye. Hope to see you again soon!
+____________________________________
+*****
+
+PS C:\Users\User\IdeaProjects\ip\text-ui-test> .\runtest.bat
+Comparing files ACTUAL.TXT and EXPECTED.TXT
+***** ACTUAL.TXT
+____________________________________
 Hello! I'm Mumbo!
 What can I do for you?
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [T][ ] read book
 Now you have 1 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [D][ ] return book (by: June 6th)
 Now you have 2 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [E][ ] project meeting (from: Aug 6th 2pm to: 4pm)
 Now you have 3 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [T][ ] join sports club
 Now you have 4 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [T][ ] borrow book
 Now you have 5 tasks in the list.
 ____________________________________
@@ -36,7 +148,7 @@ Nice! I've marked this task as done.
 [T][X] join sports club
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [T][ ] borrow book
 Now you have 6 tasks in the list.
 ____________________________________
@@ -50,17 +162,17 @@ Here are the tasks in your list:
 6. [T][ ] borrow book
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [D][ ] return book (by: Sunday)
 Now you have 7 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [E][ ] project meeting (from: Mon 2pm to: 4pm)
 Now you have 8 tasks in the list.
 ____________________________________
 ____________________________________
-Got it. I've added this task:
+Got it! I've added this task:
  [D][ ] do homework (by: no idea :-P)
 Now you have 9 tasks in the list.
 ____________________________________
