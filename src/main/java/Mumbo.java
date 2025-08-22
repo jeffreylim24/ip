@@ -121,6 +121,36 @@ public class Mumbo {
                     System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
                     break;
 
+                case "delete":
+                    if (argument != null && argument.matches("\\d+")) {
+                        int index = Integer.parseInt(argument);
+                        if (index > 0 && index <= list.size()) {
+                            Task deleted = list.get(index - 1);
+                            list.remove(index - 1);
+                            System.out.println(line + "\n\uD83D\uDE0A Got it! I've removed this task:");
+                            System.out.println(" " + deleted);
+                            System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
+                        } else {
+                            System.out.println(line + "\n⚠\uFE0FError: " + argument + " exceeds list size.\n" + line);
+                        }
+                    } else {
+                        System.out.println(line + "\n⚠\uFE0FError: " + argument + " is not a valid input. Please specify a number\n" + line);
+                    }
+                    break;
+
+                case "help":
+                    System.out.println(line + "\nPossible commands: ");
+                    System.out.println("1. help: Shows possible commands\n" +
+                            "2. list: Shows the current list of tasks\n" +
+                            "3. todo <task>: Adds a task\n" +
+                            "4. deadline <task> /by <deadline>: Adds a task with a deadline\n" +
+                            "5. event <task> /from <start> /to <end>: Adds an event with a start and end\n" +
+                            "6. mark <integer>: Marks a task as complete\n" +
+                            "7. unmark <integer>: Unmarks a task's completion\n" +
+                            "8. delete <integer>: Removes a task from the list\n" +
+                            "9. bye: Ends the conversation with Mumbo \uD83E\uDD7A \n" + line);
+                    break;
+
                 default:
                     System.out.println(line + "\nSorry, I didn’t quite catch that \uD83D\uDE05");
                     System.out.println("Try typing 'help' to see possible commands \uD83D\uDE0A \n" + line);
