@@ -1,22 +1,24 @@
-public class Task {
+public abstract class Task {
     protected String task;
-    protected boolean status;
+    protected boolean isDone;
+    protected final TaskType type;
 
-    public Task(String task) {
+    public Task(TaskType type, String task) {
         this.task = task;
-        this.status = false;
+        this.isDone = false;
+        this.type = type;
     }
 
     public void mark(boolean x) {
-        status = x;
+        isDone = x;
     }
 
     public boolean isDone() {
-        return this.status;
+        return this.isDone;
     }
 
     @Override
     public String toString() {
-        return "[" + (status ? "X" : " ") + "] " + task;
+        return "[" + type.tag() + "][" + (isDone ? "X" : " ") + "] " + task;
     }
 }
