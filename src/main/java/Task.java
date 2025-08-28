@@ -17,6 +17,8 @@ public abstract class Task {
         return this.isDone;
     }
 
+    public abstract String toFormattedString();
+
     @Override
     public String toString() {
         return "[" + type.tag() + "][" + (isDone ? "X" : " ") + "] " + task;
