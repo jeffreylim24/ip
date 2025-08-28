@@ -7,6 +7,11 @@ public class Deadline extends Task {
     }
 
     @Override
+    public String toFormattedString() {
+        return "D | " + (isDone ? "1" : "0") + " | " + task + " | " + this.deadline;
+    }
+
+    @Override
     public String toString() {
         return super.toString() + " (by: " + deadline + ")";
     }

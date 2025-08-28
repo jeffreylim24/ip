@@ -4,16 +4,14 @@ import java.util.Scanner;
 public class Mumbo {
 
     private static final String line = "____________________________________";
-
-    public Mumbo() {}
+    private static final String greeting = line + "\nHello, I'm Mumbo!\nWhat can I do for you?\n" + line;
+    private static final String farewell = line + "\nBye. Hope to see you again soon! \n" + line;
 
     public static void main(String[] args) {
         // Set up
-        String greeting = line + "\nHello, I'm Mumbo!\nWhat can I do for you?\n" + line;
-        String farewell = line + "\nBye. Hope to see you again soon! \n" + line;
-
         Scanner scanner = new Scanner(System.in);
-        ArrayList<Task> list = new ArrayList<>();
+        Storage storage = new Storage("mumbo_tasks.txt");   // Checks & initializes directory & file as needed
+        ArrayList<Task> list = storage.load();
 
         System.out.println(greeting);
 
@@ -27,6 +25,32 @@ public class Mumbo {
             String argument = (parts.length > 1) ? parts[1] : null; // null if it is a 1 word command
 
             if (command == Command.BYE) {
+                if (list.isEmpty()) {
+                    System.out.println(farewell);
+                    break;
+                }
+
+                // Prompt user to clear cache
+                String reply;
+                while (true) {
+                    System.out.println(line);
+                    System.out.println("Just one more thing before you go! Do you want to clear your saved tasks? (Y/N)");
+                    System.out.println(line);
+
+                    reply = scanner.nextLine().trim().toLowerCase();
+                    if (reply.equals("y") || reply.equals("yes")) {
+                        storage.clear();
+                        list.clear();
+                        System.out.println(line + "\nOkay! I've cleared your saved tasks.\n" + line);
+                        break;
+                    } else if (reply.equals("n") || reply.equals("no")) {
+                        System.out.println(line + "\nGot it. I'll keep your tasks.\n" + line);
+                        break;
+                    } else {
+                        System.out.println(line + "\nPlease type 'yes' or 'no'.\n" + line);
+                    }
+                }
+
                 System.out.println(farewell);
                 break;
             }
@@ -43,10 +67,10 @@ public class Mumbo {
 
             case MARK:
             case UNMARK:
-                if (argument != null && argument.matches("\\d+")) {
+                if (argument != null && argument.matches("\\d+")) { // Checks if the argument is an integer
                     int index = Integer.parseInt(argument);
                     boolean isDone = (command == Command.MARK);
-                    if (index > 0 && index <= list.size()) {
+                    if (index > 0 && index <= list.size()) {    // Checks if argument is within range
                         Task task = list.get(index - 1);
                         task.mark(isDone);
                         if (isDone) {
@@ -54,10 +78,11 @@ public class Mumbo {
                         } else {
                             System.out.println(line + "\nOk, I've marked this task as not done yet:\n" + task + "\n" + line);
                         }
-                    } else {
+                        storage.save(list); // Save changes made
+                    } else {    // argument out of range
                         System.out.println(line + "\nError: " + argument + " exceeds list size.\n" + line);
                     }
-                } else {
+                } else {    // argument was not an integer
                     System.out.println(line + "\nError: " + argument + " is not a valid input. Please specify a number\n" + line);
                 }
                 break;
@@ -72,6 +97,7 @@ public class Mumbo {
                 System.out.println(line + "\nGot it! I've added this task:");
                 System.out.println(" " + todo);
                 System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
+                storage.save(list); // Save changes made
                 break;
 
             case DEADLINE:
@@ -79,11 +105,12 @@ public class Mumbo {
                     System.out.println(line +"\nUh Oh! The description cannot be empty.\n" + line);
                     break;
                 }
-                int x = argument.indexOf(" /by ");
-                if (x == -1) {
+                int x = argument.indexOf(" /by ");  // Searches for /by keyword
+                if (x == -1) {  // Unable to find /by keyword
                     System.out.println(line + "\nOops! Please specify deadline using /by <deadline>.\n" + line);
                     break;
                 }
+                // Splits argument into task description & deadline
                 String dTask = argument.substring(0, x);
                 String by = argument.substring(x + 5);
                 if (dTask.isEmpty() || by.isEmpty()) {
@@ -95,6 +122,7 @@ public class Mumbo {
                 System.out.println(line + "\nGot it! I've added this task:");
                 System.out.println(" " + deadline);
                 System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
+                storage.save(list); // Save changes made
                 break;
 
 
@@ -103,12 +131,14 @@ public class Mumbo {
                     System.out.println(line +"\nUh Oh! The description cannot be empty.\n" + line);
                     break;
                 }
+                // Searches for /from and /to keywords
                 int startX = argument.indexOf(" /from ");
                 int endX = argument.indexOf(" /to ");
                 if (startX == -1 || endX == -1 || endX < startX) {
                     System.out.println(line + "\nOops! Please specify event duration using /from <start> /to <end>\n" + line);
                     break;
                 }
+                // Splits argument into task description, start & end
                 String eTask = argument.substring(0, startX);
                 String start = argument.substring(startX + 7, endX);
                 String end = argument.substring(endX + 5);
@@ -121,23 +151,31 @@ public class Mumbo {
                 System.out.println(line + "\nGot it! I've added this task:");
                 System.out.println(" " + event);
                 System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
+                storage.save(list); // Save changes made
                 break;
 
             case DELETE:
-                if (argument != null && argument.matches("\\d+")) {
+                if (argument != null && argument.matches("\\d+")) { // Checks if argument is an integer
                     int index = Integer.parseInt(argument);
-                    if (index > 0 && index <= list.size()) {
+                    if (index > 0 && index <= list.size()) {    // Checks if argument is within range
                         Task deleted = list.get(index - 1);
                         list.remove(index - 1);
                         System.out.println(line + "\nGot it! I've removed this task:");
                         System.out.println(" " + deleted);
                         System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
-                    } else {
+                        storage.save(list); // Save changes made
+                    } else { // argument is out of range
                         System.out.println(line + "\nError: " + argument + " exceeds list size.\n" + line);
                     }
-                } else {
+                } else {    // argument is not an integer
                     System.out.println(line + "\nError: " + argument + " is not a valid input. Please specify a number\n" + line);
                 }
+                break;
+
+            case CLEAR:
+                storage.clear();
+                list.clear();
+                System.out.println(line + "\nOkay! I've cleared your saved tasks.\n" + line);
                 break;
 
             case HELP:
@@ -150,7 +188,8 @@ public class Mumbo {
                         "6. mark <integer>: Marks a task as complete\n" +
                         "7. unmark <integer>: Unmarks a task's completion\n" +
                         "8. delete <integer>: Removes a task from the list\n" +
-                        "9. bye: Ends the conversation with Mumbo\n" + line);
+                        "9. clear: Clears the list\n" + 
+                        "10. bye: Ends the conversation with Mumbo\n" + line);
                 break;
 
 
