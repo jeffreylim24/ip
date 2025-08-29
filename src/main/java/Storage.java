@@ -7,6 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handles loading tasks from and saving tasks to persistent storage (a local file).
+ */
+
 public class Storage {
     private final String path;
 
@@ -27,9 +31,9 @@ public class Storage {
         }
     }
 
-    public void save(List<Task> tasks) {
+    public void save(TaskList tasks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.path))) {
-            for (Task task : tasks) {
+            for (Task task : tasks.asList()) {
                 writer.write(task.toFormattedString());  // Convert task to string format
                 writer.newLine();               // Add a new line after each task
             }
@@ -39,7 +43,7 @@ public class Storage {
         }
     }
 
-    public ArrayList<Task> load() {
+    public TaskList load() {
         ArrayList<Task> tasks = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(this.path))) {
             String line;
@@ -52,15 +56,7 @@ public class Storage {
             System.out.println("An error occurred while loading tasks.");
             e.printStackTrace();
         }
-        return tasks;
-    }
-
-    public void clear() {
-        try (BufferedWriter w = new BufferedWriter(new FileWriter(this.path, false))) {
-            // Write nothing to truncate the file
-        } catch (IOException e) {
-            System.out.println("Failed to clear saved tasks: " + e.getMessage());
-        }
+        return new TaskList(tasks);
     }
 
     public Task parseTask(String line) {

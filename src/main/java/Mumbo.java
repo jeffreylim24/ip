@@ -1,203 +1,134 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * The main chatbot class that ties together the UI, storage, and task list.
+ * Manages the overall application flow.
+ */
+
 public class Mumbo {
+    private final Ui ui;
+    private final Storage storage;
+    private final TaskList tasks;
 
-    private static final String line = "____________________________________";
-    private static final String greeting = line + "\nHello, I'm Mumbo!\nWhat can I do for you?\n" + line;
-    private static final String farewell = line + "\nBye. Hope to see you again soon! \n" + line;
+    public Mumbo(String filePath) {
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        this.tasks = storage.load();
+    }
 
-    public static void main(String[] args) {
-        // Set up
-        Scanner scanner = new Scanner(System.in);
-        Storage storage = new Storage("mumbo_tasks.txt");   // Checks & initializes directory & file as needed
-        ArrayList<Task> list = storage.load();
-
-        System.out.println(greeting);
-
-        // Read user input
-        while (true) {
-            String input = scanner.nextLine();
-
-            // Split into command & argument
-            String[] parts = input.split("\\s+", 2);
-            Command command = Command.from(parts[0]);
-            String argument = (parts.length > 1) ? parts[1] : null; // null if it is a 1 word command
-
-            if (command == Command.BYE) {
-                if (list.isEmpty()) {
-                    System.out.println(farewell);
-                    break;
-                }
-
-                // Prompt user to clear cache
-                String reply;
-                while (true) {
-                    System.out.println(line);
-                    System.out.println("Just one more thing before you go! Do you want to clear your saved tasks? (Y/N)");
-                    System.out.println(line);
-
-                    reply = scanner.nextLine().trim().toLowerCase();
-                    if (reply.equals("y") || reply.equals("yes")) {
-                        storage.clear();
-                        list.clear();
-                        System.out.println(line + "\nOkay! I've cleared your saved tasks.\n" + line);
-                        break;
-                    } else if (reply.equals("n") || reply.equals("no")) {
-                        System.out.println(line + "\nGot it. I'll keep your tasks.\n" + line);
-                        break;
-                    } else {
-                        System.out.println(line + "\nPlease type 'yes' or 'no'.\n" + line);
-                    }
-                }
-
-                System.out.println(farewell);
-                break;
-            }
-
-            switch (command) {
+    public void run() {
+        ui.showWelcome();
+        boolean isExit = false;
+        while (!isExit) {
+            String input = ui.readCommand();
+            ParsedInput in = Parser.parse(input);
+            switch (in.command) {
             case LIST:
-                System.out.println(line);
-                System.out.println("Here are the tasks in your list:");
-                for (int i = 0; i < list.size(); i++) {
-                    System.out.println((i + 1) + ". " + list.get(i).toString());
-                }
-                System.out.println(line);
-                break;
-
-            case MARK:
-            case UNMARK:
-                if (argument != null && argument.matches("\\d+")) { // Checks if the argument is an integer
-                    int index = Integer.parseInt(argument);
-                    boolean isDone = (command == Command.MARK);
-                    if (index > 0 && index <= list.size()) {    // Checks if argument is within range
-                        Task task = list.get(index - 1);
-                        task.mark(isDone);
-                        if (isDone) {
-                            System.out.println(line + "\nNice! I've marked this task as done.\n" + task + "\n" + line);
-                        } else {
-                            System.out.println(line + "\nOk, I've marked this task as not done yet:\n" + task + "\n" + line);
-                        }
-                        storage.save(list); // Save changes made
-                    } else {    // argument out of range
-                        System.out.println(line + "\nError: " + argument + " exceeds list size.\n" + line);
-                    }
-                } else {    // argument was not an integer
-                    System.out.println(line + "\nError: " + argument + " is not a valid input. Please specify a number\n" + line);
-                }
+                ui.showList(tasks);
                 break;
 
             case TODO:
-                if (argument == null) {
-                    System.out.println(line +"\nUh Oh! The description cannot be empty.\n" + line);
-                    break;
-                }
-                Todo todo = new Todo(argument);
-                list.add(todo);
-                System.out.println(line + "\nGot it! I've added this task:");
-                System.out.println(" " + todo);
-                System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
-                storage.save(list); // Save changes made
+                Task t = tasks.add(new Todo(in.args[0]));
+                ui.showAdded(t, tasks.size());
+                storage.save(tasks);
                 break;
 
             case DEADLINE:
-                if (argument == null) {
-                    System.out.println(line +"\nUh Oh! The description cannot be empty.\n" + line);
-                    break;
-                }
-                int x = argument.indexOf(" /by ");  // Searches for /by keyword
-                if (x == -1) {  // Unable to find /by keyword
-                    System.out.println(line + "\nOops! Please specify deadline using /by <deadline>.\n" + line);
-                    break;
-                }
-                // Splits argument into task description & deadline
-                String dTask = argument.substring(0, x);
-                String by = argument.substring(x + 5);
-                if (dTask.isEmpty() || by.isEmpty()) {
-                    System.out.println(line + "\nOops! Please provide both task description and its deadline.\n" + line);
-                    break;
-                }
-                Deadline deadline = new Deadline(dTask, by);
-                list.add(deadline);
-                System.out.println(line + "\nGot it! I've added this task:");
-                System.out.println(" " + deadline);
-                System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
-                storage.save(list); // Save changes made
+                Task td = tasks.add(new Deadline(in.args[0], in.args[1]));
+                ui.showAdded(td, tasks.size());
+                storage.save(tasks);
                 break;
 
-
             case EVENT:
-                if (argument == null) {
-                    System.out.println(line +"\nUh Oh! The description cannot be empty.\n" + line);
+                Task te = tasks.add(new Event(in.args[0], in.args[1], in.args[2]));
+                ui.showAdded(te, tasks.size());
+                storage.save(tasks);
+                break;
+
+            case MARK:
+                int mIndex = Integer.parseInt(in.args[0]);
+                try {
+                    Validator.validateInRange(mIndex, 1, tasks.size());
+                } catch (MumboException e) {
+                    ui.showError(e.getMessage());
                     break;
                 }
-                // Searches for /from and /to keywords
-                int startX = argument.indexOf(" /from ");
-                int endX = argument.indexOf(" /to ");
-                if (startX == -1 || endX == -1 || endX < startX) {
-                    System.out.println(line + "\nOops! Please specify event duration using /from <start> /to <end>\n" + line);
+                Task tm = tasks.mark(mIndex, true);
+                ui.showMarked(tm, true);
+                storage.save(tasks);
+                break;
+
+            case UNMARK:
+                int uIndex = Integer.parseInt(in.args[0]);
+                try {
+                    Validator.validateInRange(uIndex, 1, tasks.size());
+                } catch (MumboException e) {
+                    ui.showError(e.getMessage());
                     break;
                 }
-                // Splits argument into task description, start & end
-                String eTask = argument.substring(0, startX);
-                String start = argument.substring(startX + 7, endX);
-                String end = argument.substring(endX + 5);
-                if (eTask.isEmpty() || start.isEmpty() || end.isEmpty()) {
-                    System.out.println(line + "\nOops! Please provide description, /from <start> and /to <end>\n" + line);
-                    break;
-                }
-                Event event = new Event(eTask, start, end);
-                list.add(event);
-                System.out.println(line + "\nGot it! I've added this task:");
-                System.out.println(" " + event);
-                System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
-                storage.save(list); // Save changes made
+                Task tu = tasks.mark(uIndex, false);
+                ui.showMarked(tu, false);
+                storage.save(tasks);
                 break;
 
             case DELETE:
-                if (argument != null && argument.matches("\\d+")) { // Checks if argument is an integer
-                    int index = Integer.parseInt(argument);
-                    if (index > 0 && index <= list.size()) {    // Checks if argument is within range
-                        Task deleted = list.get(index - 1);
-                        list.remove(index - 1);
-                        System.out.println(line + "\nGot it! I've removed this task:");
-                        System.out.println(" " + deleted);
-                        System.out.println("Now you have " + list.size() + " tasks in the list.\n" + line);
-                        storage.save(list); // Save changes made
-                    } else { // argument is out of range
-                        System.out.println(line + "\nError: " + argument + " exceeds list size.\n" + line);
-                    }
-                } else {    // argument is not an integer
-                    System.out.println(line + "\nError: " + argument + " is not a valid input. Please specify a number\n" + line);
+                int idx = Integer.parseInt(in.args[0]);
+                try {
+                    Validator.validateInRange(idx, 1, tasks.size());
+                } catch (MumboException e) {
+                    ui.showError(e.getMessage());
+                    break;
                 }
+                Task dt = tasks.delete(idx);
+                ui.showDeleted(dt, tasks.size());
+                storage.save(tasks);
                 break;
 
             case CLEAR:
-                storage.clear();
-                list.clear();
-                System.out.println(line + "\nOkay! I've cleared your saved tasks.\n" + line);
+                tasks.clear();
+                storage.save(tasks);
+                ui.showClear();
                 break;
 
             case HELP:
-                System.out.println(line + "\nPossible commands: ");
-                System.out.println("1. help: Shows possible commands\n" +
-                        "2. list: Shows the current list of tasks\n" +
-                        "3. todo <task>: Adds a task\n" +
-                        "4. deadline <task> /by <deadline>: Adds a task with a deadline\n" +
-                        "5. event <task> /from <start> /to <end>: Adds an event with a start and end\n" +
-                        "6. mark <integer>: Marks a task as complete\n" +
-                        "7. unmark <integer>: Unmarks a task's completion\n" +
-                        "8. delete <integer>: Removes a task from the list\n" +
-                        "9. clear: Clears the list\n" + 
-                        "10. bye: Ends the conversation with Mumbo\n" + line);
+                ui.showHelp();
                 break;
 
+            case BYE:
+                ui.queryClearCache();
+                boolean isKept;
+                while (true) {
+                    String reply = ui.readCommand();
+                    try {
+                        isKept = Validator.validateYesNo(reply);
+                        break;
+                    } catch (MumboException e) {
+                        ui.showError(e.getMessage());
+                    }
+                }
+                if (isKept) {
+                    isExit = true;
+                    break;
+                }
+                tasks.clear();
+                storage.save(tasks);
+                ui.showClear();
+                isExit = true;
+                break;
 
-            case UNKNOWN:
-                System.out.println(line + "\nSorry, I didn't quite catch that...");
-                System.out.println("Try typing 'help' to see possible commands\n" + line);
+            case ERROR:
+                ui.showError(in.args[0]);
+                break;
+
+            default:
+                ui.showError("Sorry, I didn't quite catch that...\nTry typing 'help' to see possible commands");
             }
         }
-        scanner.close();
+        ui.showBye();
+    }
+
+    public static void main(String[] args) {
+        new Mumbo("mumbo_tasks.txt").run();
     }
 }

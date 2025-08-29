@@ -1,5 +1,5 @@
 public enum Command {
-    LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, CLEAR, HELP, BYE, UNKNOWN;
+    LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, CLEAR, HELP, BYE, UNKNOWN, ERROR;
 
     public static Command from(String cmd) {
         if (cmd == null) return UNKNOWN;
