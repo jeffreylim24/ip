@@ -1,7 +1,22 @@
+package mumbo;
+
 import java.time.format.DateTimeParseException;
 
+import mumbo.exception.MumboException;
+import mumbo.storage.Storage;
+import mumbo.task.Deadline;
+import mumbo.task.Event;
+import mumbo.task.Task;
+import mumbo.task.TaskList;
+import mumbo.task.Todo;
+import mumbo.ui.Ui;
+import mumbo.userinput.DateTimeUtil;
+import mumbo.userinput.ParsedInput;
+import mumbo.userinput.Parser;
+import mumbo.userinput.Validator;
+
 /**
- * Mumbo class
+ * Mumbo.Mumbo class
  *
  * The main chatbot class that ties together the UI, storage, and task list
  * Manages the overall application flow
@@ -22,6 +37,9 @@ public class Mumbo {
         this.tasks = storage.load();
     }
 
+    /**
+     * Starts the chatbot
+     */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
@@ -155,6 +173,9 @@ public class Mumbo {
         ui.showBye();
     }
 
+    /**
+     * Starts the chatbot
+     */
     public static void main(String[] args) {
         new Mumbo("mumbo_tasks.txt").run();
     }

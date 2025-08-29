@@ -1,3 +1,8 @@
+package mumbo.command;
+
+/**
+ * An enum of commands recognised by Mumbo
+ */
 public enum Command {
     LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, CLEAR, HELP, BYE, UNKNOWN, ERROR;
 

@@ -1,3 +1,5 @@
+package mumbo.userinput;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,7 +52,7 @@ public class DateTimeUtil {
                 : dt.format(PRETTY_DATE_TIME);
     }
 
-    // For Storage (stable, unambiguous)
+    // For Mumbo.Storage (stable, unambiguous)
     public static String iso(LocalDateTime dt) {
         return dt.toString();
     }

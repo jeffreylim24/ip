@@ -1,5 +1,5 @@
 ____________________________________
-Hello, I'm Mumbo!
+Hello, I'm mumbo.mumbo!
 What can I do for you?
 ____________________________________
 ____________________________________
@@ -16,7 +16,7 @@ Possible commands:
 6. mark <integer>: Marks a task as complete
 7. unmark <integer>: Unmarks a task's completion
 8. delete <integer>: Removes a task from the list
-9. bye: Ends the conversation with Mumbo
+9. bye: Ends the conversation with mumbo.mumbo
 ____________________________________
 ____________________________________
 Got it! I've added this task:

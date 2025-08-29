@@ -1,25 +1,19 @@
+package mumbo.userinput;
+
+import mumbo.command.Command;
+import mumbo.exception.MumboException;
+
 /**
- * ParsedInput class
- *
- * An input that has been separated into its command and arguments
+ * Parser class to parse user inputs into acceptable formats
  */
 
-class ParsedInput {
-    final Command command;
-    final String[] args;
+public class Parser {
 
     /**
-     * Creates a parsed input with the specified characteristics
-     * @param command an Enum of different commands accepted by Mumbo
-     * @param args 
+     * Parsing method for most inputs
+     * @param raw a String of the raw user input
+     * @return returns a ParsedInput object which contains a Command and its set of arguments
      */
-    ParsedInput(Command command, String... args) {
-        this.command = command;
-        this.args = args == null ? new String[0] : args;
-    }
-}
-
-public class Parser {
     public static ParsedInput parse(String raw) {
         if (raw == null || raw.isBlank()) {
             return new ParsedInput(Command.UNKNOWN);
@@ -80,6 +74,12 @@ public class Parser {
         }
     }
 
+    /**
+     * A parser method that converts yes & no to its boolean equivalents, must go through validYesNo check first
+     * Assumes that the input is 'y', 'n', 'yes' or 'no'
+     * @param s a String which the user inputs
+     * @return returns its boolean equivalent
+     */
     public static boolean parseYesNo(String s) {
         String s1 = s.trim().toLowerCase();
         return s1.equals("y") || s1.equals("yes");

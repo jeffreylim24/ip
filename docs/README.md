@@ -1,4 +1,4 @@
-# Mumbo User Guide
+# mumbo.mumbo User Guide
 
 // Update the title above to match the actual product name
 

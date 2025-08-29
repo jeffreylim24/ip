@@ -1,4 +1,9 @@
+package mumbo.ui;
+
 import java.util.Scanner;
+
+import mumbo.task.Task;
+import mumbo.task.TaskList;
 
 /**
  * Handles interactions with the user such as displaying messages and reading commands.
@@ -10,7 +15,7 @@ public class Ui {
     private final Scanner scanner = new Scanner(System.in);
 
     public void showWelcome() {
-        System.out.println(LINE + "\nHello, I'm Mumbo!\nWhat can I do for you?\n" + LINE);
+        System.out.println(LINE + "\nHello, I'm Mumbo.Mumbo!\nWhat can I do for you?\n" + LINE);
     }
 
     public void showBye() {

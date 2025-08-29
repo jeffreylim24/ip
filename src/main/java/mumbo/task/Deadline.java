@@ -1,7 +1,11 @@
+package mumbo.task;
+
 import java.time.LocalDateTime;
 
+import mumbo.userinput.DateTimeUtil;
+
 /**
- * Deadline class
+ * Mumbo.Deadline class
  *
  * A type of task that has a description and a deadline
  */

@@ -1,7 +1,9 @@
+package mumbo.task;
+
 /**
- * Todo class
+ * Mumbo.Todo class
  *
- * A type of Task that only has a description
+ * A type of Mumbo.Task that only has a description
  */
 
 public class Todo extends Task {

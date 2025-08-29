@@ -1,3 +1,5 @@
+package mumbo.storage;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -5,7 +7,13 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import mumbo.task.Deadline;
+import mumbo.task.Event;
+import mumbo.task.Task;
+import mumbo.task.TaskList;
+import mumbo.task.Todo;
+import mumbo.userinput.DateTimeUtil;
 
 /**
  * Handles loading tasks from and saving tasks to persistent storage (a local file).
@@ -14,6 +22,10 @@ import java.util.List;
 public class Storage {
     private final String path;
 
+    /**
+     * Initialises a storage file under 'data' directory if either doesn't exist yet
+     * @param fileName a String containing the name of the storage file
+     */
     public Storage(String fileName) {
         this.path = "./data/" + fileName;
 
@@ -31,6 +43,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Writes tasks into the storage file
+     * @param tasks a TaskList which is essentially a list of tasks
+     */
     public void save(TaskList tasks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.path))) {
             for (Task task : tasks.asList()) {
@@ -43,6 +59,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Reads the storage file and loads the stored list of tasks
+     * @return returns the saved list of tasks
+     */
     public TaskList load() {
         ArrayList<Task> tasks = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(this.path))) {
@@ -59,6 +79,11 @@ public class Storage {
         return new TaskList(tasks);
     }
 
+    /**
+     * A helper function to read the storage file and convert them into the appropriate tasks
+     * @param line a String containing a stored task
+     * @return generates a task
+     */
     public Task parseTask(String line) {
         // Split the line using a delimiter
         String[] parts = line.split("\\|");
