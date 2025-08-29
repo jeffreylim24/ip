@@ -1,8 +1,16 @@
-public class Event extends Task {
-    protected String start;
-    protected String end;
+import java.time.LocalDateTime;
 
-    public Event(String task, String start, String end) {
+/**
+ * Event class
+ *
+ * A type of class that has a description, a start and an end
+ */
+
+public class Event extends Task {
+    protected LocalDateTime start;
+    protected LocalDateTime end;
+
+    public Event(String task, LocalDateTime start, LocalDateTime end) {
         super(TaskType.EVENT, task);
         this.start = start;
         this.end = end;
@@ -10,11 +18,16 @@ public class Event extends Task {
 
     @Override
     public String toFormattedString() {
-        return "E | " + (isDone ? "1" : "0") + " | " + task + " | " + start + " | " + end;
+        return "E | " + (isDone ? "1" : "0") + " | "
+                + task + " | "
+                + start + " | "
+                + end;
     }
 
     @Override
     public String toString() {
-        return super.toString() + " (from: " + start + " to: " + end + ")";
+        return super.toString()
+                + " (from: " + DateTimeUtil.prettify(start)
+                + " to: " + DateTimeUtil.prettify(end) + ")";
     }
 }

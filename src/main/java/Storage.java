@@ -71,8 +71,8 @@ public class Storage {
         // Depending on the task type, create accordingly
         return switch (parts[0]) {
             case "T" -> new Todo(parts[2]);
-            case "D" -> new Deadline(parts[2], parts[3]);
-            case "E" -> new Event(parts[2], parts[3], parts[4]);
+            case "D" -> new Deadline(parts[2], DateTimeUtil.parseIso(parts[3]));
+            case "E" -> new Event(parts[2], DateTimeUtil.parseIso(parts[3]), DateTimeUtil.parseIso(parts[4]));
             default -> {
                 System.out.println("Unknown task type: " + parts[0]);
                 yield null;

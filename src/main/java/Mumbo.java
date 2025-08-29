@@ -1,9 +1,10 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.time.format.DateTimeParseException;
 
 /**
- * The main chatbot class that ties together the UI, storage, and task list.
- * Manages the overall application flow.
+ * Mumbo class
+ *
+ * The main chatbot class that ties together the UI, storage, and task list
+ * Manages the overall application flow
  */
 
 public class Mumbo {
@@ -11,9 +12,13 @@ public class Mumbo {
     private final Storage storage;
     private final TaskList tasks;
 
-    public Mumbo(String filePath) {
+    /**
+     * Initialises the chatbot with its cache file
+     * @param fileName a String containing the name of its cache file
+     */
+    public Mumbo(String fileName) {
         this.ui = new Ui();
-        this.storage = new Storage(filePath);
+        this.storage = new Storage(fileName);
         this.tasks = storage.load();
     }
 
@@ -35,15 +40,33 @@ public class Mumbo {
                 break;
 
             case DEADLINE:
-                Task td = tasks.add(new Deadline(in.args[0], in.args[1]));
-                ui.showAdded(td, tasks.size());
-                storage.save(tasks);
+                try {
+                    Task td = tasks.add(new Deadline(in.args[0], DateTimeUtil.parseDateTime(in.args[1])));
+                    ui.showAdded(td, tasks.size());
+                    storage.save(tasks);
+                } catch (DateTimeParseException e) {
+                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n" +
+                            "1) yyyy/MM/dd\n" +
+                            "2) yyyy/MM/dd HH:mm\n" +
+                            "3) dd/MM/yyyy\n" +
+                            "4) dd/MM/yyyy HH:mm");
+                }
                 break;
 
             case EVENT:
-                Task te = tasks.add(new Event(in.args[0], in.args[1], in.args[2]));
-                ui.showAdded(te, tasks.size());
-                storage.save(tasks);
+                try {
+                    Task te = tasks.add(new Event(in.args[0],
+                            DateTimeUtil.parseDateTime(in.args[1]),
+                            DateTimeUtil.parseDateTime(in.args[2])));
+                    ui.showAdded(te, tasks.size());
+                    storage.save(tasks);
+                } catch (DateTimeParseException e) {
+                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n" +
+                            "1) yyyy/MM/dd\n" +
+                            "2) yyyy/MM/dd HH:mm\n" +
+                            "3) dd/MM/yyyy\n" +
+                            "4) dd/MM/yyyy HH:mm");
+                }
                 break;
 
             case MARK:
@@ -96,24 +119,28 @@ public class Mumbo {
                 break;
 
             case BYE:
+                if (tasks.isEmpty()) {
+                    isExit = true;
+                    break;
+                }
                 ui.queryClearCache();
-                boolean isKept;
+                boolean isCleared;
                 while (true) {
                     String reply = ui.readCommand();
                     try {
-                        isKept = Validator.validateYesNo(reply);
+                        isCleared = Validator.validateYesNo(reply);
                         break;
                     } catch (MumboException e) {
                         ui.showError(e.getMessage());
                     }
                 }
-                if (isKept) {
+                if (isCleared) {
+                    tasks.clear();
+                    storage.save(tasks);
+                    ui.showClear();
                     isExit = true;
                     break;
                 }
-                tasks.clear();
-                storage.save(tasks);
-                ui.showClear();
                 isExit = true;
                 break;
 

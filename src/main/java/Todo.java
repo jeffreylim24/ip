@@ -1,3 +1,9 @@
+/**
+ * Todo class
+ *
+ * A type of Task that only has a description
+ */
+
 public class Todo extends Task {
     public Todo(String task) {
         super(TaskType.TODO, task);

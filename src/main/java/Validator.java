@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
 public class Validator {
     public Validator() {}
 
@@ -16,7 +19,7 @@ public class Validator {
     }
 
     public static void validateInRange(int s, int min, int max) {
-        if (s > max && s < min) {
+        if (s > max || s < min) {
             throw new MumboException("That's out of range! You only have " + max + " tasks in the list.");
         }
     }
@@ -48,6 +51,19 @@ public class Validator {
         String[] range = by[1].split("\\s*/to\\s*", 2);
         if (range.length < 2 || range[0].isBlank() || range[1].isBlank()) {
             throw new MumboException("Please specify event end with /to <end>");
+        }
+        try {
+            LocalDateTime start = DateTimeUtil.parseDateTime(range[0]);
+            LocalDateTime end = DateTimeUtil.parseDateTime(range[1]);
+            if (end.isBefore(start)) {
+                throw new MumboException("Oh no! The event can't end before it even starts!");
+            }
+        } catch (DateTimeParseException e) {
+            throw new MumboException(e.getMessage() + "\nPlease use one of the following formats:\n" +
+                    "1) yyyy/MM/dd\n" +
+                    "2) yyyy/MM/dd HH:mm\n" +
+                    "3) dd/MM/yyyy\n" +
+                    "4) dd/MM/yyyy HH:mm");
         }
     }
 
