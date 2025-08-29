@@ -47,4 +47,8 @@ public class TaskList {
     public void clear() {
         tasks.clear();
     }
+
+    public boolean isEmpty() {
+        return tasks.isEmpty();
+    }
 }

@@ -1,7 +1,18 @@
+/**
+ * ParsedInput class
+ *
+ * An input that has been separated into its command and arguments
+ */
+
 class ParsedInput {
     final Command command;
     final String[] args;
 
+    /**
+     * Creates a parsed input with the specified characteristics
+     * @param command an Enum of different commands accepted by Mumbo
+     * @param args 
+     */
     ParsedInput(Command command, String... args) {
         this.command = command;
         this.args = args == null ? new String[0] : args;
