@@ -21,4 +21,15 @@ public class ParsedInput {
         this.command = command;
         this.args = args == null ? new String[0] : args;
     }
+
+    public Command getCommand() {
+        return command;
+    }
+
+    public String getArgX(int index) {
+        if (index < 1 || index > args.length) {
+            return null;
+        }
+        return args[index - 1];
+    }
 }

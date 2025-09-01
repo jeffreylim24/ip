@@ -63,11 +63,11 @@ public class Mumbo {
                     ui.showAdded(td, tasks.size());
                     storage.save(tasks);
                 } catch (DateTimeParseException e) {
-                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n" +
-                            "1) yyyy/MM/dd\n" +
-                            "2) yyyy/MM/dd HH:mm\n" +
-                            "3) dd/MM/yyyy\n" +
-                            "4) dd/MM/yyyy HH:mm");
+                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n"
+                            + "1) yyyy/MM/dd\n"
+                            + "2) yyyy/MM/dd HH:mm\n"
+                            + "3) dd/MM/yyyy\n"
+                            + "4) dd/MM/yyyy HH:mm");
                 }
                 break;
 
@@ -79,11 +79,11 @@ public class Mumbo {
                     ui.showAdded(te, tasks.size());
                     storage.save(tasks);
                 } catch (DateTimeParseException e) {
-                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n" +
-                            "1) yyyy/MM/dd\n" +
-                            "2) yyyy/MM/dd HH:mm\n" +
-                            "3) dd/MM/yyyy\n" +
-                            "4) dd/MM/yyyy HH:mm");
+                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n"
+                            + "1) yyyy/MM/dd\n"
+                            + "2) yyyy/MM/dd HH:mm\n"
+                            + "3) dd/MM/yyyy\n"
+                            + "4) dd/MM/yyyy HH:mm");
                 }
                 break;
 

@@ -2,9 +2,9 @@ package mumbo.storage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -31,12 +31,12 @@ public class Storage {
 
         // Check if user has './data' directory & creates if necessary
         File directory = new File("./data");
-        directory.mkdir();  // No need for exists() check, as mkdir() will do nothing if it already exists
+        directory.mkdir(); // No need for exists() check, as mkdir() will do nothing if it already exists
 
         // Check if user has the file & creates if necessary
         File file = new File(this.path);
         try {
-            file.createNewFile();   // No need for exists() check for the same reason as above
+            file.createNewFile(); // No need for exists() check for the same reason as above
         } catch (IOException e) {
             System.out.println("An error occurred while creating the file.");
             e.printStackTrace();
@@ -50,8 +50,8 @@ public class Storage {
     public void save(TaskList tasks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.path))) {
             for (Task task : tasks.asList()) {
-                writer.write(task.toFormattedString());  // Convert task to string format
-                writer.newLine();               // Add a new line after each task
+                writer.write(task.toFormattedString()); // Convert task to string format
+                writer.newLine(); // Add a new line after each task
             }
         } catch (IOException e) {
             System.out.println("An error occurred while saving tasks.");
@@ -95,13 +95,13 @@ public class Storage {
 
         // Depending on the task type, create accordingly
         return switch (parts[0]) {
-            case "T" -> new Todo(parts[2]);
-            case "D" -> new Deadline(parts[2], DateTimeUtil.parseIso(parts[3]));
-            case "E" -> new Event(parts[2], DateTimeUtil.parseIso(parts[3]), DateTimeUtil.parseIso(parts[4]));
-            default -> {
-                System.out.println("Unknown task type: " + parts[0]);
-                yield null;
-            }
+        case "T" -> new Todo(parts[2]);
+        case "D" -> new Deadline(parts[2], DateTimeUtil.parseIso(parts[3]));
+        case "E" -> new Event(parts[2], DateTimeUtil.parseIso(parts[3]), DateTimeUtil.parseIso(parts[4]));
+        default -> {
+            System.out.println("Unknown task type: " + parts[0]);
+            yield null;
+        }
         };
     }
 }

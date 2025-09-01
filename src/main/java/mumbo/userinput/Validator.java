@@ -63,11 +63,11 @@ public class Validator {
                 throw new MumboException("Oh no! The event can't end before it even starts!");
             }
         } catch (DateTimeParseException e) {
-            throw new MumboException(e.getMessage() + "\nPlease use one of the following formats:\n" +
-                    "1) yyyy/MM/dd\n" +
-                    "2) yyyy/MM/dd HH:mm\n" +
-                    "3) dd/MM/yyyy\n" +
-                    "4) dd/MM/yyyy HH:mm");
+            throw new MumboException(e.getMessage() + "\nPlease use one of the following formats:\n"
+                    + "1) yyyy/MM/dd\n"
+                    + "2) yyyy/MM/dd HH:mm\n"
+                    + "3) dd/MM/yyyy\n"
+                    + "4) dd/MM/yyyy HH:mm");
         }
     }
 
