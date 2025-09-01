@@ -7,6 +7,11 @@ package mumbo.task;
  */
 
 public class Todo extends Task {
+
+    /**
+     * Constructor for a Todo task
+     * @param task the description of the task
+     */
     public Todo(String task) {
         super(TaskType.TODO, task);
     }

@@ -5,9 +5,18 @@ import java.time.format.DateTimeParseException;
 
 import mumbo.exception.MumboException;
 
+/**
+ * Validator class to validate user input after parsing.
+ * Includes methods to validate integers, ranges, todo, deadline, event formats,
+ * and yes/no responses.
+ */
 public class Validator {
-    public Validator() {}
 
+    /**
+     * Validates that the input string represents a positive integer.
+     * @param s the input string to validate
+     * @throws MumboException if the input is null, blank, not a number, or not a positive integer
+     */
     public static void validateInt(String s) {
         if (s == null || s.isBlank()) {
             throw new MumboException("Please specify which task.");
@@ -22,18 +31,30 @@ public class Validator {
         }
     }
 
+    /**
+     * Validates that the integer s is within the range [min, max].
+     * @param s the integer to validate
+     */
     public static void validateInRange(int s, int min, int max) {
         if (s > max || s < min) {
             throw new MumboException("That's out of range! You only have " + max + " tasks in the list.");
         }
     }
 
+    /**
+     * Validates the format of a todo command.
+     * @param s the description of the todo
+     */
     public static void validateTodo(String s) {
         if (s == null || s.isBlank()) {
             throw new MumboException("Uh Oh! The description cannot be empty.");
         }
     }
 
+    /**
+     * Validates the format of a deadline command.
+     * @param s the description and deadline string
+     */
     public static void validateDeadline(String s) {
         if (s == null || s.isBlank()) {
             throw new MumboException("Uh Oh! The description cannot be empty.");
@@ -44,6 +65,10 @@ public class Validator {
         }
     }
 
+    /**
+     * Validates the format of an event command.
+     * @param s the description and event time range string
+     */
     public static void validateEvent(String s) {
         if (s == null || s.isBlank()) {
             throw new MumboException("Uh Oh! The description cannot be empty.");
@@ -71,6 +96,12 @@ public class Validator {
         }
     }
 
+    /**
+     * Validates a yes/no response.
+     * @param s the input string to validate
+     * @return true if the response is affirmative (yes), false if negative (no)
+     * @throws MumboException if the input is not a valid yes/no response
+     */
     public static boolean validateYesNo(String s) {
         String s1 = s.trim().toLowerCase();
         if (!(s1.equals("y") || s1.equals("n") || s1.equals("yes") || s1.equals("no"))) {

@@ -10,6 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test suite for the Parser class.
+ * Covers valid and invalid inputs for all supported commands.
+ * Ensures correct command identification and argument extraction.
+ */
 public class ParserTest {
     @Test
     void testNullInput() {
