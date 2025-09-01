@@ -2,10 +2,8 @@ package mumbo.task;
 
 /**
  * Mumbo.Todo class
- *
  * A type of Mumbo.Task that only has a description
  */
-
 public class Todo extends Task {
 
     /**
