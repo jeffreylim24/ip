@@ -120,6 +120,23 @@ public class Ui {
     }
 
     /**
+     * Displays the matching tasks the user searched for
+     * @param tasks a TaskList of matching tasks
+     */
+    public void showFind(TaskList tasks) {
+        System.out.println(LINE);
+        if (tasks.size() == 0) {
+            System.out.println("There are no matching tasks.");
+        } else {
+            System.out.println("Here are the tasks matching your description:");
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
+            }
+        }
+        System.out.println(LINE);
+    }
+
+    /**
      * Displays the help message listing all available commands.
      */
     public void showHelp() {
@@ -132,7 +149,8 @@ public class Ui {
                 + "6. unmark <n>\n"
                 + "7. delete <n>\n"
                 + "8. clear\n"
-                + "9. help\n"
-                + "10. bye\n" + LINE);
+                + "9. find <desc>\n"
+                + "10. help\n"
+                + "11. bye\n" + LINE);
     }
 }
