@@ -40,6 +40,7 @@ application {
 
 shadowJar {
     archiveBaseName = "mumbo"
+    archiveFileName = "mumbo.jar"
     archiveClassifier = null
 }
 

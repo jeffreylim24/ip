@@ -7,13 +7,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
 
+/**
+ * Utility class for parsing and formatting date/time inputs.
+ */
 public class DateTimeUtil {
 
-    // Accept a few common formats:
-    // 1) yyyy-MM-dd
-    // 2) yyyy-MM-dd HH:mm
-    // 3) dd-MM-yyyy
-    // 4) dd-MM-yyyy HH:mm
+    private static final DateTimeFormatter PRETTY_DATE =
+            DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
+
+    private static final DateTimeFormatter PRETTY_DATE_TIME =
+            DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm", Locale.ENGLISH);
+
     private static final DateTimeFormatter[] CANDIDATES = new DateTimeFormatter[] {
             DateTimeFormatter.ofPattern("yyyy-MM-dd"),
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"),
@@ -21,6 +25,12 @@ public class DateTimeUtil {
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
     };
 
+    /**
+     * Parse a date/time string into a LocalDateTime.
+     * Accepts a few common formats (see CANDIDATES).
+     * @param s the input string
+     * @return the parsed LocalDateTime
+     */
     public static LocalDateTime parseDateTime(String s) {
         s = s.trim();
         for (DateTimeFormatter f : CANDIDATES) {
@@ -32,19 +42,21 @@ public class DateTimeUtil {
                     // Try as LocalDate next
                     LocalDate d = LocalDate.parse(s, f);
                     return d.atStartOfDay();
-                } catch (Exception ignore2) {}
+                } catch (Exception ignore2) {
+                    continue;
+                }
             }
         }
         throw new DateTimeParseException("Unrecognised date/time: " + s, s, 0);
     }
 
-    // Pretty printing used in toString()
-    private static final DateTimeFormatter PRETTY_DATE_TIME =
-            DateTimeFormatter.ofPattern("d MMM yyyy, HH:mm", Locale.ENGLISH);
 
-    private static final DateTimeFormatter PRETTY_DATE =
-            DateTimeFormatter.ofPattern("d MMM yyyy", Locale.ENGLISH);
 
+    /**
+     * Prettify a LocalDateTime for display to the user.
+     * @param dt the date/time
+     * @return the pretty string
+     */
     public static String prettify(LocalDateTime dt) {
         // If time is midnight, we assume user only typed a date
         return dt.toLocalTime().equals(LocalTime.MIDNIGHT)
@@ -52,11 +64,20 @@ public class DateTimeUtil {
                 : dt.format(PRETTY_DATE_TIME);
     }
 
-    // For Mumbo.Storage (stable, unambiguous)
+    /**
+     * Format a LocalDateTime in ISO format (used by Mumbo.Storage).
+     * @param dt the date/time
+     * @return the ISO string
+     */
     public static String iso(LocalDateTime dt) {
         return dt.toString();
     }
 
+    /**
+     * Parse a date/time in ISO format (used by Mumbo.Storage).
+     * @param s the ISO string
+     * @return the parsed LocalDateTime
+    */
     public static LocalDateTime parseIso(String s) {
         return LocalDateTime.parse(s);
     }

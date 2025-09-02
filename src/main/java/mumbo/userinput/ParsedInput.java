@@ -22,10 +22,19 @@ public class ParsedInput {
         this.args = args == null ? new String[0] : args;
     }
 
+    /**
+     * Gets the command of this parsed input
+     * @return the command of this parsed input
+     */
     public Command getCommand() {
         return command;
     }
 
+    /**
+     * Gets the argument at the specified index (1-based)
+     * @param index the index of the argument to get (1-based)
+     * @return the argument at the specified index, or null if the index is out of bounds
+     */
     public String getArgX(int index) {
         if (index < 1 || index > args.length) {
             return null;
