@@ -154,4 +154,25 @@ public class ParserTest {
         assertFalse(Parser.parseYesNo("no"));
         assertFalse(Parser.parseYesNo(" No "));
     }
+
+    @Test
+    void testParseFindValid() {
+        ParsedInput result = Parser.parse("find book");
+        assertEquals(Command.FIND, result.command);
+        assertEquals("book", result.args[0]);
+    }
+
+    @Test
+    void testParseFindEmpty() {
+        ParsedInput result = Parser.parse("find");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].contains("Please specify a keyword"));
+    }
+
+    @Test
+    void testParseFindBlank() {
+        ParsedInput result = Parser.parse("find   ");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].contains("Please specify a keyword"));
+    }
 }

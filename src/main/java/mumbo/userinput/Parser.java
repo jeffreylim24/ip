@@ -63,6 +63,14 @@ public class Parser {
             }
             return new ParsedInput(cmd, arg);
 
+        case FIND:
+            try {
+                Validator.validateFind(arg);
+            } catch (MumboException e) {
+                return new ParsedInput(Command.ERROR, e.getMessage());
+            }
+            return new ParsedInput(cmd, arg);
+
         case LIST:
         case CLEAR:
         case HELP:

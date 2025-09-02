@@ -4,7 +4,7 @@ package mumbo.command;
  * An enum of commands recognised by Mumbo
  */
 public enum Command {
-    LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, CLEAR, HELP, BYE, UNKNOWN, ERROR;
+    LIST, TODO, DEADLINE, EVENT, MARK, UNMARK, DELETE, CLEAR, HELP, BYE, FIND, UNKNOWN, ERROR;
 
     /**
      * Converts a string input into its respective command enum
@@ -26,6 +26,7 @@ public enum Command {
         case "clear" -> CLEAR;
         case "help" -> HELP;
         case "bye" -> BYE;
+        case "find" -> FIND;
         default -> UNKNOWN;
         };
     }

@@ -74,10 +74,28 @@ public class TaskList {
     }
 
     /**
-     * Clear all tasks from the list;
+     * Clears all tasks from the list
      */
     public void clear() {
         tasks.clear();
+    }
+
+    /**
+     * Finds all tasks that contain the specified keyword in their description.
+     * @param keyword the keyword to search for (case-insensitive)
+     * @return a new TaskList containing all matching tasks
+     */
+    public TaskList find(String keyword) {
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        String lowerKeyword = keyword.toLowerCase();
+        
+        for (Task task : tasks) {
+            if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        
+        return new TaskList(matchingTasks);
     }
 
     /**

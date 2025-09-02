@@ -109,4 +109,15 @@ public class Validator {
         }
         return s1.equals("y") || s1.equals("yes");
     }
+
+    /**
+     * Validates the find command argument.
+     * @param s the keyword to search for
+     * @throws MumboException if the keyword is null or blank
+     */
+    public static void validateFind(String s) {
+        if (s == null || s.isBlank()) {
+            throw new MumboException("Please specify a keyword to search for.");
+        }
+    }
 }

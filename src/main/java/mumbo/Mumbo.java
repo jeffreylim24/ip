@@ -16,8 +16,7 @@ import mumbo.userinput.Parser;
 import mumbo.userinput.Validator;
 
 /**
- * Mumbo.Mumbo class
- *
+ * Mumbo class
  * The main chatbot class that ties together the UI, storage, and task list
  * Manages the overall application flow
  */
@@ -134,6 +133,11 @@ public class Mumbo {
 
             case HELP:
                 ui.showHelp();
+                break;
+
+            case FIND:
+                TaskList matchingTasks = tasks.find(in.args[0]);
+                ui.showFind(matchingTasks);
                 break;
 
             case BYE:
