@@ -7,9 +7,8 @@ import mumbo.task.TaskList;
 
 /**
  * Handles interactions with the user such as displaying messages and reading commands.
- * Responsible for input/output logic.
+ * Responsible for input/output logic and message formatting.
  */
-
 public class Ui {
     private static final String LINE = "____________________________________";
     private final Scanner scanner = new Scanner(System.in);
@@ -18,14 +17,30 @@ public class Ui {
      * Displays the welcome message when the application starts.
      */
     public void showWelcome() {
-        System.out.println(LINE + "\nHello, I'm Mumbo.Mumbo!\nWhat can I do for you?\n" + LINE);
+        System.out.println(getWelcomeMessage());
+    }
+
+    /**
+     * Gets the welcome message.
+     * @return the formatted welcome message
+     */
+    public String getWelcomeMessage() {
+        return "Hello, I'm Mumbo!\nWhat can I do for you?";
     }
 
     /**
      * Displays the goodbye message when the application exits.
      */
     public void showBye() {
-        System.out.println(LINE + "\nBye. Hope to see you again soon!\n" + LINE);
+        System.out.println(getByeMessage());
+    }
+
+    /**
+     * Gets the goodbye message.
+     * @return the formatted goodbye message
+     */
+    public String getByeMessage() {
+        return "Bye! Hope to see you again soon!";
     }
 
     /**
@@ -56,8 +71,17 @@ public class Ui {
      * @param size The current number of tasks in the list.
      */
     public void showAdded(Task t, int size) {
-        System.out.println(LINE + "\nGot it. I've added this task: \n " + t);
-        System.out.println("Now you have " + size + " tasks in the list.\n" + LINE);
+        System.out.println(getAddedMessage(t, size));
+    }
+
+    /**
+     * Gets the message for when a task is added.
+     * @param t The task that was added.
+     * @param size The current number of tasks in the list.
+     * @return the formatted message
+     */
+    public String getAddedMessage(Task t, int size) {
+        return "Got it. I've added this task:\n  " + t + "\nNow you have " + size + " tasks in the list.";
     }
 
     /**
@@ -66,8 +90,17 @@ public class Ui {
      * @param size The current number of tasks in the list.
      */
     public void showDeleted(Task t, int size) {
-        System.out.println(LINE + "\nNoted. I've removed this task: \n " + t);
-        System.out.println("Now you have " + size + " tasks in the list.\n" + LINE);
+        System.out.println(getDeletedMessage(t, size));
+    }
+
+    /**
+     * Gets the message for when a task is deleted.
+     * @param t The task that was deleted.
+     * @param size The current number of tasks in the list.
+     * @return the formatted message
+     */
+    public String getDeletedMessage(Task t, int size) {
+        return "Noted. I've removed this task:\n  " + t + "\nNow you have " + size + " tasks in the list.";
     }
 
     /**
@@ -76,12 +109,18 @@ public class Ui {
      * @param done True if the task was marked as done, false if unmarked.
      */
     public void showMarked(Task t, boolean done) {
-        System.out.println(LINE);
-        System.out.println(done
-                ? "Nice! I've marked this task as done:"
-                : "OK, I've marked this task as not done yet:");
-        System.out.println(" " + t);
-        System.out.println(LINE);
+        System.out.println(getMarkedMessage(t, done));
+    }
+
+    /**
+     * Gets the message for when a task is marked/unmarked.
+     * @param t The task that was marked or unmarked.
+     * @param done True if the task was marked as done, false if unmarked.
+     * @return the formatted message
+     */
+    public String getMarkedMessage(Task t, boolean done) {
+        String action = done ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:";
+        return action + "\n  " + t;
     }
 
     /**
@@ -89,25 +128,39 @@ public class Ui {
      * @param tasks The list of tasks to be displayed.
      */
     public void showList(TaskList tasks) {
-        System.out.println(LINE);
-        if (tasks.size() == 0) {
-            System.out.println("Your list is empty.");
+        System.out.println(getListMessage(tasks));
+    }
+
+    /**
+     * Gets the formatted list of tasks.
+     * @param tasks The list of tasks to be displayed.
+     * @return the formatted list message
+     */
+    public String getListMessage(TaskList tasks) {
+        if (tasks.isEmpty()) {
+            return "You have no tasks in your list.";
         } else {
-            System.out.println("Here are the tasks in your list:");
+            StringBuilder sb = new StringBuilder("Here are the tasks in your list:\n");
             for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
+                sb.append((i + 1)).append(". ").append(tasks.get(i)).append("\n");
             }
+            return sb.toString().trim();
         }
-        System.out.println(LINE);
     }
 
     /**
      * Displays a message confirming that all tasks have been cleared.
      */
     public void showClear() {
-        System.out.println(LINE);
-        System.out.println("Cleared all tasks.");
-        System.out.println(LINE);
+        System.out.println(getClearMessage());
+    }
+
+    /**
+     * Gets the message for when tasks are cleared.
+     * @return the formatted clear message
+     */
+    public String getClearMessage() {
+        return "All tasks have been cleared!";
     }
 
     /**
@@ -120,37 +173,91 @@ public class Ui {
     }
 
     /**
+     * Gets the query message for clearing cache before exit.
+     * @param taskCount The number of tasks in the list.
+     * @return the formatted query message
+     */
+    public String getClearCacheQuery(int taskCount) {
+        return "You have " + taskCount + " task(s) in your list.\n"
+                + "Do you want to clear your tasks before leaving?\n"
+                + "Type 'yes' or 'no' (or 'y' or 'n').";
+    }
+
+    /**
+     * Gets the message for when tasks are cleared on exit.
+     * @return the formatted message
+     */
+    public String getClearedOnExitMessage() {
+        return "All tasks have been cleared!\nBye! Hope to see you again soon!";
+    }
+
+    /**
      * Displays the matching tasks the user searched for
      * @param tasks a TaskList of matching tasks
      */
     public void showFind(TaskList tasks) {
-        System.out.println(LINE);
-        if (tasks.size() == 0) {
-            System.out.println("There are no matching tasks.");
+        System.out.println(getFindMessage(tasks));
+    }
+
+    /**
+     * Gets the message for find results.
+     * @param tasks a TaskList of matching tasks
+     * @return the formatted find message
+     */
+    public String getFindMessage(TaskList tasks) {
+        if (tasks.isEmpty()) {
+            return "No matching tasks found.";
         } else {
-            System.out.println("Here are the tasks matching your description:");
+            StringBuilder sb = new StringBuilder("Here are the matching tasks in your list:\n");
             for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
+                sb.append((i + 1)).append(". ").append(tasks.get(i)).append("\n");
             }
+            return sb.toString().trim();
         }
-        System.out.println(LINE);
     }
 
     /**
      * Displays the help message listing all available commands.
      */
     public void showHelp() {
-        System.out.println(LINE + "\nCommands:\n"
-                + "1. list\n"
-                + "2. todo <desc>\n"
-                + "3. deadline <desc> /by <when>\n"
-                + "4. event <desc> /from <start> /to <end>\n"
-                + "5. mark <n>\n"
-                + "6. unmark <n>\n"
-                + "7. delete <n>\n"
-                + "8. clear\n"
-                + "9. find <desc>\n"
-                + "10. help\n"
-                + "11. bye\n" + LINE);
+        System.out.println(getHelpMessage());
+    }
+
+    /**
+     * Gets the help message listing all available commands.
+     * @return the formatted help message
+     */
+    public String getHelpMessage() {
+        return "Here are the available commands:\n"
+                + "• list - show all tasks\n"
+                + "• todo <description> - add a todo task\n"
+                + "• deadline <description> /by <date> - add a deadline\n"
+                + "• event <description> /from <start> /to <end> - add an event\n"
+                + "• mark <number> - mark task as done\n"
+                + "• unmark <number> - mark task as not done\n"
+                + "• delete <number> - delete a task\n"
+                + "• find <keyword> - find tasks containing keyword\n"
+                + "• clear - clear all tasks\n"
+                + "• bye - exit the program";
+    }
+
+    /**
+     * Gets the error message for invalid date format.
+     * @return the formatted error message
+     */
+    public String getDateFormatErrorMessage() {
+        return "Invalid date format!\nPlease use one of the following formats:\n"
+                + "1) yyyy/MM/dd\n"
+                + "2) yyyy/MM/dd HH:mm\n"
+                + "3) dd/MM/yyyy\n"
+                + "4) dd/MM/yyyy HH:mm";
+    }
+
+    /**
+     * Gets the error message for yes/no validation.
+     * @return the formatted error message
+     */
+    public String getYesNoErrorMessage() {
+        return "Please type 'yes' or 'no' (or 'y' or 'n').";
     }
 }

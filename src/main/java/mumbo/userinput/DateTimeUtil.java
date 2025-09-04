@@ -37,12 +37,12 @@ public class DateTimeUtil {
             try {
                 // Try as LocalDateTime
                 return LocalDateTime.parse(s, f);
-            } catch (Exception ignore) {
+            } catch (DateTimeParseException ignore) {
                 try {
                     // Try as LocalDate next
                     LocalDate d = LocalDate.parse(s, f);
                     return d.atStartOfDay();
-                } catch (Exception ignore2) {
+                } catch (DateTimeParseException ignore2) {
                     continue;
                 }
             }

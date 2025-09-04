@@ -1,4 +1,4 @@
-package mumbo;
+package mumbo.app;
 
 import java.time.format.DateTimeParseException;
 
@@ -20,11 +20,13 @@ import mumbo.userinput.Validator;
  * The main chatbot class that ties together the UI, storage, and task list
  * Manages the overall application flow
  */
-
 public class Mumbo {
+    private static final String DEFAULT_FILE_PATH = "mumbo-tasks.txt";
     private final Ui ui;
     private final Storage storage;
     private final TaskList tasks;
+    private boolean isAwaitingByeConfirmation = false; // Track if we're waiting for bye confirmation
+    private boolean shouldExit = false; // Track if the application should exit
 
     /**
      * Initialises the chatbot with its cache file
@@ -62,11 +64,7 @@ public class Mumbo {
                     ui.showAdded(td, tasks.size());
                     storage.save(tasks);
                 } catch (DateTimeParseException e) {
-                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n"
-                            + "1) yyyy/MM/dd\n"
-                            + "2) yyyy/MM/dd HH:mm\n"
-                            + "3) dd/MM/yyyy\n"
-                            + "4) dd/MM/yyyy HH:mm");
+                    ui.showError(ui.getDateFormatErrorMessage());
                 }
                 break;
 
@@ -78,11 +76,7 @@ public class Mumbo {
                     ui.showAdded(te, tasks.size());
                     storage.save(tasks);
                 } catch (DateTimeParseException e) {
-                    ui.showError(e.getMessage() + "\nPlease use one of the following formats:\n"
-                            + "1) yyyy/MM/dd\n"
-                            + "2) yyyy/MM/dd HH:mm\n"
-                            + "3) dd/MM/yyyy\n"
-                            + "4) dd/MM/yyyy HH:mm");
+                    ui.showError(ui.getDateFormatErrorMessage());
                 }
                 break;
 
@@ -181,6 +175,128 @@ public class Mumbo {
      * Starts the chatbot
      */
     public static void main(String[] args) {
-        new Mumbo("mumbo_tasks.txt").run();
+        new Mumbo(DEFAULT_FILE_PATH).run();
+    }
+
+    /**
+     * Returns whether the application should exit.
+     * @return true if the application should exit, false otherwise
+     */
+    public boolean shouldExit() {
+        return shouldExit;
+    }
+
+    /**
+     * Generates a response for the user's input (for GUI usage).
+     * @param input the user's input string
+     * @return the response message
+     */
+    public String getResponse(String input) {
+        // Handle bye confirmation flow first
+        if (isAwaitingByeConfirmation) {
+            try {
+                boolean shouldClear = Validator.validateYesNo(input);
+                if (shouldClear) {
+                    tasks.clear();
+                    storage.save(tasks);
+                    isAwaitingByeConfirmation = false;
+                    shouldExit = true;
+                    return ui.getClearedOnExitMessage();
+                } else {
+                    isAwaitingByeConfirmation = false;
+                    shouldExit = true;
+                    return ui.getByeMessage();
+                }
+            } catch (MumboException e) {
+                return ui.getYesNoErrorMessage();
+            }
+        }
+
+        // Reset exit flag for non-bye commands
+        shouldExit = false;
+
+        ParsedInput in = Parser.parse(input);
+        
+        try {
+            switch (in.command) {
+            case LIST:
+                return ui.getListMessage(tasks);
+
+            case TODO:
+                Task t = tasks.add(new Todo(in.args[0]));
+                storage.save(tasks);
+                return ui.getAddedMessage(t, tasks.size());
+
+            case DEADLINE:
+                try {
+                    Task td = tasks.add(new Deadline(in.args[0], DateTimeUtil.parseDateTime(in.args[1])));
+                    storage.save(tasks);
+                    return ui.getAddedMessage(td, tasks.size());
+                } catch (DateTimeParseException e) {
+                    return ui.getDateFormatErrorMessage();
+                }
+
+            case EVENT:
+                try {
+                    Task te = tasks.add(new Event(in.args[0],
+                            DateTimeUtil.parseDateTime(in.args[1]),
+                            DateTimeUtil.parseDateTime(in.args[2])));
+                    storage.save(tasks);
+                    return ui.getAddedMessage(te, tasks.size());
+                } catch (DateTimeParseException e) {
+                    return ui.getDateFormatErrorMessage();
+                }
+
+            case MARK:
+                int mIndex = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(mIndex, 1, tasks.size());
+                Task tm = tasks.mark(mIndex, true);
+                storage.save(tasks);
+                return ui.getMarkedMessage(tm, true);
+
+            case UNMARK:
+                int uIndex = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(uIndex, 1, tasks.size());
+                Task tu = tasks.mark(uIndex, false);
+                storage.save(tasks);
+                return ui.getMarkedMessage(tu, false);
+
+            case DELETE:
+                int idx = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(idx, 1, tasks.size());
+                Task dt = tasks.delete(idx);
+                storage.save(tasks);
+                return ui.getDeletedMessage(dt, tasks.size());
+
+            case CLEAR:
+                tasks.clear();
+                storage.save(tasks);
+                return ui.getClearMessage();
+
+            case HELP:
+                return ui.getHelpMessage();
+
+            case FIND:
+                TaskList matchingTasks = tasks.find(in.args[0]);
+                return ui.getFindMessage(matchingTasks);
+
+            case BYE:
+                if (tasks.isEmpty()) {
+                    shouldExit = true;
+                    return ui.getByeMessage();
+                } else {
+                    isAwaitingByeConfirmation = true;
+                    return ui.getClearCacheQuery(tasks.size());
+                }
+
+            case ERROR:
+                return in.args[0];
+
+            default:
+                return "Sorry, I didn't quite catch that...\nTry typing 'help' to see possible commands";
+            }
+        } catch (Exception e) {
+            return "Oops! Something went wrong: " + e.getMessage();
+        }
     }
 }
