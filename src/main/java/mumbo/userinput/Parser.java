@@ -4,7 +4,7 @@ import mumbo.command.Command;
 import mumbo.exception.MumboException;
 
 /**
- * Parser class to parse user inputs into acceptable formats
+ * Parsers raw user input into an acceptable format for internal processing
  */
 
 public class Parser {
@@ -53,8 +53,8 @@ public class Parser {
             String[] range = by[1].split("\\s*/to\\s*", 2);
             return new ParsedInput(cmd, by[0].trim(), range[0].trim(), range[1].trim());
 
-        case MARK:
-        case UNMARK:
+        case MARK: // Fallthrough
+        case UNMARK: // Fallthrough
         case DELETE:
             try {
                 Validator.validateInt(arg);
