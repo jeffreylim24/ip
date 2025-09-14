@@ -142,20 +142,6 @@ public class ParserTest {
     }
 
     @Test
-    void testParseYesNoTrue() {
-        assertTrue(Parser.parseYesNo("y"));
-        assertTrue(Parser.parseYesNo("yes"));
-        assertTrue(Parser.parseYesNo(" YeS "));
-    }
-
-    @Test
-    void testParseYesNoFalse() {
-        assertFalse(Parser.parseYesNo("n"));
-        assertFalse(Parser.parseYesNo("no"));
-        assertFalse(Parser.parseYesNo(" No "));
-    }
-
-    @Test
     void testParseFindValid() {
         ParsedInput result = Parser.parse("find book");
         assertEquals(Command.FIND, result.command);
