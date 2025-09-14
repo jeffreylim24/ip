@@ -109,7 +109,6 @@ public class Mumbo {
         shouldExit = false;
 
         ParsedInput in = Parser.parse(input);
-        assert in != null : "ParsedInput must not be null";
 
         switch (in.command) {
         case LIST:
