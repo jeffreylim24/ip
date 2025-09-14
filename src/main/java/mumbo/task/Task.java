@@ -16,6 +16,8 @@ public abstract class Task {
      * @param task a String depicting the task description
      */
     public Task(TaskType type, String task) {
+        assert type != null : "Task type must not be null";
+        assert task != null && !task.isBlank() : "Task description must not be null/blank";
         this.task = task;
         this.isDone = false;
         this.type = type;

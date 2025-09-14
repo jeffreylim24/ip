@@ -27,6 +27,7 @@ public class Storage {
      * @param fileName a String containing the name of the storage file
      */
     public Storage(String fileName) {
+        assert fileName != null && !fileName.isBlank() : "Storage filename must not be null/blank";
         this.path = "./data/" + fileName;
 
         // Check if user has './data' directory & creates if necessary
@@ -48,6 +49,7 @@ public class Storage {
      * @param tasks a TaskList which is essentially a list of tasks
      */
     public void save(TaskList tasks) {
+        assert tasks != null : "Tasks must not be null when saving";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.path))) {
             for (Task task : tasks.asList()) {
                 writer.write(task.toFormattedString()); // Convert task to string format
@@ -86,6 +88,7 @@ public class Storage {
      */
     @SuppressWarnings("checkstyle:Indentation")
     public Task parseTask(String line) {
+        assert line != null : "Stored line must not be null";
         // Split the line using a delimiter
         String[] parts = line.split("\\|");
 
@@ -96,13 +99,23 @@ public class Storage {
 
         // Depending on the task type, create accordingly
         return switch (parts[0]) {
-            case "T" -> new Todo(parts[2]);
-            case "D" -> new Deadline(parts[2], DateTimeUtil.parseIso(parts[3]));
-            case "E" -> new Event(parts[2], DateTimeUtil.parseIso(parts[3]), DateTimeUtil.parseIso(parts[4]));
-            default -> {
-                System.out.println("Unknown task type: " + parts[0]);
-                yield null;
-            }
+        case "T" -> {
+            assert parts.length >= 3 : "Todo storage line must have at least 3 parts";
+            yield new Todo(parts[2]);
+        }
+        case "D" -> {
+            assert parts.length >= 4 : "Deadline storage line must have at least 4 parts";
+            yield new Deadline(parts[2], DateTimeUtil.parseIso(parts[3]));
+        }
+        case "E" -> {
+            assert parts.length >= 5 : "Event storage line must have at least 5 parts";
+            yield new Event(parts[2], DateTimeUtil.parseIso(parts[3]), DateTimeUtil.parseIso(parts[4]));
+        }
+        default -> {
+            System.out.println("Unknown task type: " + parts[0]);
+            assert false : "Unknown task type in storage";
+            yield null;
+        }
         };
     }
 }

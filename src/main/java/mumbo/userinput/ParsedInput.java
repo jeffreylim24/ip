@@ -18,8 +18,13 @@ public class ParsedInput {
      * @param args a set of organised strings for a number of arguments
      */
     ParsedInput(Command command, String... args) {
+        assert command != null : "Command must not be null";
         this.command = command;
         this.args = args == null ? new String[0] : args;
+        assert this.args != null : "Args array must not be null";
+        for (int i = 0; i < this.args.length; i++) {
+            assert this.args[i] != null : "Arg at index " + i + " must not be null";
+        }
     }
 
     /**

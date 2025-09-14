@@ -32,6 +32,8 @@ public class Ui {
      * @return the formatted message
      */
     public String getAddedMessage(Task t, int size) {
+        assert t != null : "Task to add must not be null";
+        assert size >= 0 : "Task count must be non-negative";
         return "Got it. I've added this task:\n  " + t + "\nNow you have " + size + " tasks in the list.";
     }
 
@@ -42,6 +44,8 @@ public class Ui {
      * @return the formatted message
      */
     public String getDeletedMessage(Task t, int size) {
+        assert t != null : "Deleted task must not be null";
+        assert size >= 0 : "Task count must be non-negative";
         return "Noted. I've removed this task:\n  " + t + "\nNow you have " + size + " tasks in the list.";
     }
 
@@ -52,6 +56,7 @@ public class Ui {
      * @return the formatted message
      */
     public String getMarkedMessage(Task t, boolean done) {
+        assert t != null : "Marked task must not be null";
         String action = done ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:";
         return action + "\n  " + t;
     }
@@ -62,6 +67,7 @@ public class Ui {
      * @return the formatted list message
      */
     public String getListMessage(TaskList tasks) {
+        assert tasks != null : "TaskList must not be null";
         if (tasks.isEmpty()) {
             return "You have no tasks in your list.";
         } else {
@@ -106,6 +112,7 @@ public class Ui {
      * @return the formatted find message
      */
     public String getFindMessage(TaskList tasks) {
+        assert tasks != null : "TaskList must not be null";
         if (tasks.isEmpty()) {
             return "No matching tasks found.";
         } else {
@@ -122,17 +129,18 @@ public class Ui {
      * @return the formatted help message
      */
     public String getHelpMessage() {
+        String bullet = "\u2022 ";
         return "Here are the available commands:\n"
-                + "• list - show all tasks\n"
-                + "• todo <description> - add a todo task\n"
-                + "• deadline <description> /by <date> - add a deadline\n"
-                + "• event <description> /from <start> /to <end> - add an event\n"
-                + "• mark <number> - mark task as done\n"
-                + "• unmark <number> - mark task as not done\n"
-                + "• delete <number> - delete a task\n"
-                + "• find <keyword> - find tasks containing keyword\n"
-                + "• clear - clear all tasks\n"
-                + "• bye - exit the program";
+                + bullet + "list - show all tasks\n"
+                + bullet + "todo <description> - add a todo task\n"
+                + bullet + "deadline <description> /by <date> - add a deadline\n"
+                + bullet + "event <description> /from <start> /to <end> - add an event\n"
+                + bullet + "mark <number> - mark task as done\n"
+                + bullet + "unmark <number> - mark task as not done\n"
+                + bullet + "delete <number> - delete a task\n"
+                + bullet + "find <keyword> - find tasks containing keyword\n"
+                + bullet + "clear - clear all tasks\n"
+                + bullet + "bye - exit the program";
     }
 
     /**

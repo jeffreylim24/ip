@@ -36,6 +36,7 @@ public class Validator {
      * @param s the integer to validate
      */
     public static void validateInRange(int s, int min, int max) {
+        // Handle out-of-range gracefully even when the list is empty (max can be < min).
         if (s > max || s < min) {
             throw new MumboException("That's out of range! You only have " + max + " tasks in the list.");
         }
@@ -103,6 +104,7 @@ public class Validator {
      * @throws MumboException if the input is not a valid yes/no response
      */
     public static boolean validateYesNo(String s) {
+        assert s != null : "Yes/No input must not be null";
         String s1 = s.trim().toLowerCase();
         if (!(s1.equals("y") || s1.equals("n") || s1.equals("yes") || s1.equals("no"))) {
             throw new MumboException("Please type 'yes or 'no'.");

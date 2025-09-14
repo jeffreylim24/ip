@@ -2,7 +2,7 @@ package mumbo.task;
 
 import java.util.ArrayList;
 import java.util.List;
-
+ 
 /**
  * Encapsulates a list of tasks and provides operations such as add, delete, mark, and clear.
  */
@@ -15,6 +15,7 @@ public class TaskList {
      * @param existing a List of Task objects
      */
     public TaskList(List<Task> existing) {
+        assert existing != null : "Existing tasks list must not be null";
         this.tasks = new ArrayList<>(existing);
     }
 
@@ -31,6 +32,7 @@ public class TaskList {
      * @return returns specified task
      */
     public Task get(int i) {
+        assert i >= 0 && i < tasks.size() : "Index out of bounds (0-based)";
         return tasks.get(i);
     }
 
@@ -48,6 +50,7 @@ public class TaskList {
      * @return returns the task for later use
      */
     public Task add(Task t) {
+        assert t != null : "Task to add must not be null";
         tasks.add(t);
         return t;
     }
@@ -58,6 +61,7 @@ public class TaskList {
      * @return returns the deleted task
      */
     public Task delete(int index1Based) {
+        assert index1Based >= 1 && index1Based <= tasks.size() : "Index out of range (1-based)";
         return tasks.remove(index1Based - 1);
     }
 
@@ -68,6 +72,7 @@ public class TaskList {
      * @return returns the marked/unmarked task
      */
     public Task mark(int index1Based, boolean done) {
+        assert index1Based >= 1 && index1Based <= tasks.size() : "Index out of range (1-based)";
         Task t = tasks.get(index1Based - 1);
         t.mark(done);
         return t;
@@ -86,15 +91,16 @@ public class TaskList {
      * @return a new TaskList containing all matching tasks
      */
     public TaskList find(String keyword) {
+        assert keyword != null : "Search keyword must not be null";
         ArrayList<Task> matchingTasks = new ArrayList<>();
         String lowerKeyword = keyword.toLowerCase();
-        
+
         for (Task task : tasks) {
             if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
                 matchingTasks.add(task);
             }
         }
-        
+
         return new TaskList(matchingTasks);
     }
 
