@@ -8,6 +8,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import mumbo.ui.Ui;
 
 /**
  * Controller for the main GUI.
@@ -35,7 +36,7 @@ public class MainWindow extends AnchorPane {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
 
         // Show welcome message when GUI starts
-        String welcomeMessage = "Hello, I'm Mumbo!\nWhat can I do for you?";
+        String welcomeMessage = new Ui().getWelcomeMessage();
         dialogContainer.getChildren().add(
             DialogBox.getDukeDialog(welcomeMessage, mumboImage)
         );

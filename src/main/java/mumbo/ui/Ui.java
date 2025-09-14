@@ -1,7 +1,5 @@
 package mumbo.ui;
 
-import java.util.Scanner;
-
 import mumbo.task.Task;
 import mumbo.task.TaskList;
 
@@ -10,15 +8,6 @@ import mumbo.task.TaskList;
  * Responsible for input/output logic and message formatting.
  */
 public class Ui {
-    private static final String LINE = "____________________________________";
-    private final Scanner scanner = new Scanner(System.in);
-
-    /**
-     * Displays the welcome message when the application starts.
-     */
-    public void showWelcome() {
-        System.out.println(getWelcomeMessage());
-    }
 
     /**
      * Gets the welcome message.
@@ -29,49 +18,11 @@ public class Ui {
     }
 
     /**
-     * Displays the goodbye message when the application exits.
-     */
-    public void showBye() {
-        System.out.println(getByeMessage());
-    }
-
-    /**
      * Gets the goodbye message.
      * @return the formatted goodbye message
      */
     public String getByeMessage() {
         return "Bye! Hope to see you again soon!";
-    }
-
-    /**
-     * Displays a line separator for better readability in the console.
-     */
-    public void showLine() {
-        System.out.println(LINE);
-    }
-
-    /**
-     * Displays an error message to the user.
-     * @param message The error message to be displayed.
-     */
-    public void showError(String message) {
-        System.out.println(LINE + "\n" + message + "\n" + LINE);
-    }
-
-    /**
-     * Reads a command input from the user.
-     */
-    public String readCommand() {
-        return scanner.nextLine();
-    }
-
-    /**
-     * Displays a message confirming that a task has been added, along with the current number of tasks.
-     * @param t The task that was added.
-     * @param size The current number of tasks in the list.
-     */
-    public void showAdded(Task t, int size) {
-        System.out.println(getAddedMessage(t, size));
     }
 
     /**
@@ -85,15 +36,6 @@ public class Ui {
     }
 
     /**
-     * Displays a message confirming that a task has been deleted, along with the current number of tasks.
-     * @param t The task that was deleted.
-     * @param size The current number of tasks in the list.
-     */
-    public void showDeleted(Task t, int size) {
-        System.out.println(getDeletedMessage(t, size));
-    }
-
-    /**
      * Gets the message for when a task is deleted.
      * @param t The task that was deleted.
      * @param size The current number of tasks in the list.
@@ -101,15 +43,6 @@ public class Ui {
      */
     public String getDeletedMessage(Task t, int size) {
         return "Noted. I've removed this task:\n  " + t + "\nNow you have " + size + " tasks in the list.";
-    }
-
-    /**
-     * Displays a message confirming that a task has been marked or unmarked.
-     * @param t The task that was marked or unmarked.
-     * @param done True if the task was marked as done, false if unmarked.
-     */
-    public void showMarked(Task t, boolean done) {
-        System.out.println(getMarkedMessage(t, done));
     }
 
     /**
@@ -121,14 +54,6 @@ public class Ui {
     public String getMarkedMessage(Task t, boolean done) {
         String action = done ? "Nice! I've marked this task as done:" : "OK, I've marked this task as not done yet:";
         return action + "\n  " + t;
-    }
-
-    /**
-     * Displays the list of tasks to the user.
-     * @param tasks The list of tasks to be displayed.
-     */
-    public void showList(TaskList tasks) {
-        System.out.println(getListMessage(tasks));
     }
 
     /**
@@ -149,27 +74,11 @@ public class Ui {
     }
 
     /**
-     * Displays a message confirming that all tasks have been cleared.
-     */
-    public void showClear() {
-        System.out.println(getClearMessage());
-    }
-
-    /**
      * Gets the message for when tasks are cleared.
      * @return the formatted clear message
      */
     public String getClearMessage() {
         return "All tasks have been cleared!";
-    }
-
-    /**
-     * Asks the user if they want to clear the saved tasks before exiting.
-     */
-    public void queryClearCache() {
-        System.out.println(LINE);
-        System.out.println("One last thing before you go! Do you want to clear your saved tasks? (Y/N)");
-        System.out.println(LINE);
     }
 
     /**
@@ -192,14 +101,6 @@ public class Ui {
     }
 
     /**
-     * Displays the matching tasks the user searched for
-     * @param tasks a TaskList of matching tasks
-     */
-    public void showFind(TaskList tasks) {
-        System.out.println(getFindMessage(tasks));
-    }
-
-    /**
      * Gets the message for find results.
      * @param tasks a TaskList of matching tasks
      * @return the formatted find message
@@ -214,13 +115,6 @@ public class Ui {
             }
             return sb.toString().trim();
         }
-    }
-
-    /**
-     * Displays the help message listing all available commands.
-     */
-    public void showHelp() {
-        System.out.println(getHelpMessage());
     }
 
     /**

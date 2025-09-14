@@ -82,14 +82,4 @@ public class Parser {
         }
     }
 
-    /**
-     * A parser method that converts yes & no to its boolean equivalents, must go through validYesNo check first
-     * Assumes that the input is 'y', 'n', 'yes' or 'no'
-     * @param s a String which the user inputs
-     * @return returns its boolean equivalent
-     */
-    public static boolean parseYesNo(String s) {
-        String s1 = s.trim().toLowerCase();
-        return s1.equals("y") || s1.equals("yes");
-    }
 }
