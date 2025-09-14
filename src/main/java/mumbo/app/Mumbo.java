@@ -57,12 +57,13 @@ public class Mumbo {
      * @param fileName path to the persistent storage file
      */
     public Mumbo(String fileName) {
+        assert fileName != null && !fileName.isBlank() : "Storage filename must not be null/blank";
         this.ui = new Ui();
         this.storage = new Storage(fileName);
         this.tasks = storage.load();
+        assert this.storage != null : "Storage must be initialised";
+        assert this.tasks != null : "Loaded TaskList must not be null";
     }
-
-    
 
     /**
      * Indicates whether the application should exit after the last processed input.
@@ -114,12 +115,14 @@ public class Mumbo {
             return ui.getListMessage(tasks);
 
         case TODO:
+            assert in.args.length >= 1 : "TODO requires one argument";
             Task t = tasks.add(new Todo(in.args[0]));
             storage.save(tasks);
             return ui.getAddedMessage(t, tasks.size());
 
         case DEADLINE:
             try {
+                assert in.args.length >= 2 : "DEADLINE requires two arguments";
                 Task td = tasks.add(new Deadline(in.args[0], DateTimeUtil.parseDateTime(in.args[1])));
                 storage.save(tasks);
                 return ui.getAddedMessage(td, tasks.size());
@@ -129,6 +132,7 @@ public class Mumbo {
 
         case EVENT:
             try {
+                assert in.args.length >= 3 : "EVENT requires three arguments";
                 Task te = tasks.add(new Event(in.args[0],
                         DateTimeUtil.parseDateTime(in.args[1]),
                         DateTimeUtil.parseDateTime(in.args[2])));
@@ -139,25 +143,40 @@ public class Mumbo {
             }
 
         case MARK:
-            int mIndex = Integer.parseInt(in.args[0]);
-            Validator.validateInRange(mIndex, 1, tasks.size());
-            Task tm = tasks.mark(mIndex, true);
-            storage.save(tasks);
-            return ui.getMarkedMessage(tm, true);
+            assert in.args.length >= 1 : "MARK requires one argument";
+            try {
+                int mIndex = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(mIndex, 1, tasks.size());
+                Task tm = tasks.mark(mIndex, true);
+                storage.save(tasks);
+                return ui.getMarkedMessage(tm, true);
+            } catch (MumboException e) {
+                return e.getMessage();
+            }
 
         case UNMARK:
-            int uIndex = Integer.parseInt(in.args[0]);
-            Validator.validateInRange(uIndex, 1, tasks.size());
-            Task tu = tasks.mark(uIndex, false);
-            storage.save(tasks);
-            return ui.getMarkedMessage(tu, false);
+            assert in.args.length >= 1 : "UNMARK requires one argument";
+            try {
+                int uIndex = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(uIndex, 1, tasks.size());
+                Task tu = tasks.mark(uIndex, false);
+                storage.save(tasks);
+                return ui.getMarkedMessage(tu, false);
+            } catch (MumboException e) {
+                return e.getMessage();
+            }
 
         case DELETE:
-            int idx = Integer.parseInt(in.args[0]);
-            Validator.validateInRange(idx, 1, tasks.size());
-            Task dt = tasks.delete(idx);
-            storage.save(tasks);
-            return ui.getDeletedMessage(dt, tasks.size());
+            assert in.args.length >= 1 : "DELETE requires one argument";
+            try {
+                int idx = Integer.parseInt(in.args[0]);
+                Validator.validateInRange(idx, 1, tasks.size());
+                Task dt = tasks.delete(idx);
+                storage.save(tasks);
+                return ui.getDeletedMessage(dt, tasks.size());
+            } catch (MumboException e) {
+                return e.getMessage();
+            }
 
         case CLEAR:
             tasks.clear();
@@ -168,6 +187,7 @@ public class Mumbo {
             return ui.getHelpMessage();
 
         case FIND:
+            assert in.args.length >= 1 : "FIND requires one argument";
             TaskList matchingTasks = tasks.find(in.args[0]);
             return ui.getFindMessage(matchingTasks);
 

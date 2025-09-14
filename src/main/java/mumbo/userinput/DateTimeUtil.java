@@ -32,7 +32,9 @@ public class DateTimeUtil {
      * @return the parsed LocalDateTime
      */
     public static LocalDateTime parseDateTime(String s) {
+        assert s != null : "Date/time string must not be null";
         s = s.trim();
+        assert !s.isEmpty() : "Date/time string must not be blank";
         for (DateTimeFormatter f : CANDIDATES) {
             try {
                 // Try as LocalDateTime
@@ -58,6 +60,7 @@ public class DateTimeUtil {
      * @return the pretty string
      */
     public static String prettify(LocalDateTime dt) {
+        assert dt != null : "Date/time must not be null";
         // If time is midnight, we assume user only typed a date
         return dt.toLocalTime().equals(LocalTime.MIDNIGHT)
                 ? dt.toLocalDate().format(PRETTY_DATE)
@@ -70,6 +73,7 @@ public class DateTimeUtil {
      * @return the ISO string
      */
     public static String iso(LocalDateTime dt) {
+        assert dt != null : "Date/time must not be null";
         return dt.toString();
     }
 
@@ -79,6 +83,7 @@ public class DateTimeUtil {
      * @return the parsed LocalDateTime
     */
     public static LocalDateTime parseIso(String s) {
+        assert s != null && !s.isBlank() : "ISO string must not be null/blank";
         return LocalDateTime.parse(s);
     }
 }
