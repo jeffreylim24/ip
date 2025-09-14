@@ -33,7 +33,10 @@ public class Parser {
         case DELETE:
             return parseIntCommand(cmd, arg);
         case FIND:
-            return parseFind(arg);
+        case FINDTAG:
+            return parseFind(cmd, arg);
+        case TAG:
+            return parseTag(arg);
         case LIST:
         case CLEAR:
         case HELP:
@@ -43,6 +46,8 @@ public class Parser {
             return new ParsedInput(Command.UNKNOWN);
         }
     }
+
+    // Private parser methods for each command:
 
     private static ParsedInput parseTodo(String arg) {
         try {
@@ -65,6 +70,24 @@ public class Parser {
         assert !segments[0].trim().isEmpty() && !segments[1].trim().isEmpty()
                 : "Deadline description and /by must be non-blank";
         return new ParsedInput(Command.DEADLINE, segments[0].trim(), segments[1].trim());
+    }
+
+    private static ParsedInput parseTag(String arg) {
+        try {
+            Validator.validateTag(arg);
+        } catch (MumboException e) {
+            return new ParsedInput(Command.ERROR, e.getMessage());
+        }
+        String[] segments = arg.split("\\s+", 2);
+        assert segments.length == 2 : "Tag must split into index and tag parts";
+        assert !segments[0].trim().isEmpty() && !segments[1].trim().isEmpty()
+                : "Tag index and tag name must be non-blank";
+        try {
+            Validator.validateInt(segments[0]);
+        } catch (MumboException e) {
+            return new ParsedInput(Command.ERROR, e.getMessage());
+        }
+        return new ParsedInput(Command.TAG, segments[0].trim(), segments[1].trim());
     }
 
     private static ParsedInput parseEvent(String arg) {
@@ -91,13 +114,14 @@ public class Parser {
         return new ParsedInput(cmd, arg);
     }
 
-    private static ParsedInput parseFind(String arg) {
+    private static ParsedInput parseFind(Command cmd, String arg) {
         try {
             Validator.validateFind(arg);
         } catch (MumboException e) {
             return new ParsedInput(Command.ERROR, e.getMessage());
         }
         assert arg != null && !arg.isBlank() : "Find keyword must not be null/blank after validation";
-        return new ParsedInput(Command.FIND, arg);
+        // Preserve the original command (FIND or FINDTAG)
+        return new ParsedInput(cmd, arg);
     }
 }

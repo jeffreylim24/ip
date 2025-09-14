@@ -139,6 +139,8 @@ public class Ui {
                 + bullet + "unmark <number> - mark task as not done\n"
                 + bullet + "delete <number> - delete a task\n"
                 + bullet + "find <keyword> - find tasks containing keyword\n"
+                + bullet + "findtag <tag> - find tasks by tag\n"
+                + bullet + "tag <index> <tag> - tags a task with a tag\n"
                 + bullet + "clear - clear all tasks\n"
                 + bullet + "bye - exit the program";
     }
@@ -161,5 +163,17 @@ public class Ui {
      */
     public String getYesNoErrorMessage() {
         return "Please type 'yes' or 'no' (or 'y' or 'n').";
+    }
+
+    /**
+     * Gets the message for when a task is tagged.
+     * @param t the task that was tagged
+     * @param tag the tag that was added
+     * @return the formatted tag message
+     */
+    public String getTaggedMessage(Task t, String tag) {
+        assert t != null : "Tagged task must not be null";
+        assert tag != null && !tag.isBlank() : "Tag must not be null or blank";
+        return "Got it. I've tagged this task accordingly:\n  " + t + " Tag: " + t.getTag();
     }
 }

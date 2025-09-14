@@ -122,4 +122,24 @@ public class Validator {
             throw new MumboException("Please specify a keyword to search for.");
         }
     }
+
+    /**
+     * Validates the tag command argument.
+     * @param s the index and tag name string
+     * @throws MumboException if the format is incorrect or index is invalid
+     */
+    public static void validateTag(String s) {
+        if (s == null || s.isBlank()) {
+            throw new MumboException("Please specify which task and the tag name.");
+        }
+        String[] segments = s.split("\\s+", 2);
+        if (segments.length < 2 || segments[0].isBlank() || segments[1].isBlank()) {
+            throw new MumboException("Please specify both the task index and the tag name.");
+        }
+        try {
+            validateInt(segments[0]);
+        } catch (MumboException e) {
+            throw new MumboException("The task index must be a positive integer (1, 2, 3, ...).");
+        }
+    }
 }

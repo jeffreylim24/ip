@@ -9,6 +9,7 @@ public abstract class Task {
     protected String task;
     protected boolean isDone;
     protected final TaskType type;
+    protected String tag;
 
     /**
      * Creates a task with its necessary details
@@ -21,6 +22,7 @@ public abstract class Task {
         this.task = task;
         this.isDone = false;
         this.type = type;
+        this.tag = null;
     }
 
     /**
@@ -52,6 +54,25 @@ public abstract class Task {
      * @return a String in a specified format
      */
     public abstract String toFormattedString();
+
+    /**
+     * A method to tag a task with a specific tag
+     * @param tag a String that represents the tag to be added
+     * @return the Task object itself, for method chaining
+     */
+    public Task tag(String tag) {
+        assert tag != null && !tag.isBlank() : "Tag must not be null or blank";
+        this.tag = tag;
+        return this;
+    }
+
+    /**
+     * A getter method to get a Task's tag
+     * @return a String that represents the task's tag
+     */
+    public String getTag() {
+        return this.tag;
+    }
 
     @Override
     public String toString() {

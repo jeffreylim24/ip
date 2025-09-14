@@ -56,6 +56,19 @@ public class TaskList {
     }
 
     /**
+     * Tags a specified task from the list with a specified tag
+     * @param index1Based a 1 based integer index
+     * @param tag a String representing the tag to be added
+     * @return
+     */
+    public Task tag(int index1Based, String tag) {
+        assert index1Based >= 1 && index1Based <= tasks.size() : "Index out of range (1-based)";
+        Task t = tasks.get(index1Based - 1);
+        t.tag(tag);
+        return t;
+    }
+
+    /**
      * Deletes a specified task from the list
      * @param index1Based a 1 based integer index
      * @return returns the deleted task
@@ -97,6 +110,27 @@ public class TaskList {
 
         for (Task task : tasks) {
             if (task.getDescription().toLowerCase().contains(lowerKeyword)) {
+                matchingTasks.add(task);
+            }
+        }
+
+        return new TaskList(matchingTasks);
+    }
+
+    /**
+     * Finds all tasks that have a tag matching the specified keyword.
+     * Matching is case-insensitive and ignores tasks without a tag.
+     * @param tag the tag to search for (case-insensitive)
+     * @return a new TaskList containing all matching tasks
+     */
+    public TaskList findByTag(String tag) {
+        assert tag != null : "Search tag must not be null";
+        ArrayList<Task> matchingTasks = new ArrayList<>();
+        String lowerTag = tag.toLowerCase();
+
+        for (Task task : tasks) {
+            String t = task.getTag();
+            if (t != null && t.toLowerCase().contains(lowerTag)) {
                 matchingTasks.add(task);
             }
         }
