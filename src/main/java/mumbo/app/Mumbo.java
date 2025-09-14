@@ -85,126 +85,162 @@ public class Mumbo {
      * @return user-facing response message
      */
     public String getResponse(String input) {
-        // Handle bye confirmation flow first
         if (isAwaitingByeConfirmation) {
-            try {
-                boolean shouldClear = Validator.validateYesNo(input);
-                if (shouldClear) {
-                    tasks.clear();
-                    storage.save(tasks);
-                    isAwaitingByeConfirmation = false;
-                    shouldExit = true;
-                    return ui.getClearedOnExitMessage();
-                } else {
-                    isAwaitingByeConfirmation = false;
-                    shouldExit = true;
-                    return ui.getByeMessage();
-                }
-            } catch (MumboException e) {
-                return ui.getYesNoErrorMessage();
-            }
+            return handleByeConfirmation(input);
         }
 
-        // Reset exit flag for non-bye commands
         shouldExit = false;
-
         ParsedInput in = Parser.parse(input);
+        assert in != null : "ParsedInput must not be null";
 
         switch (in.command) {
         case LIST:
-            return ui.getListMessage(tasks);
-
+            return handleList();
         case TODO:
-            assert in.args.length >= 1 : "TODO requires one argument";
-            Task t = tasks.add(new Todo(in.args[0]));
-            storage.save(tasks);
-            return ui.getAddedMessage(t, tasks.size());
-
+            return handleTodo(in);
         case DEADLINE:
-            try {
-                assert in.args.length >= 2 : "DEADLINE requires two arguments";
-                Task td = tasks.add(new Deadline(in.args[0], DateTimeUtil.parseDateTime(in.args[1])));
-                storage.save(tasks);
-                return ui.getAddedMessage(td, tasks.size());
-            } catch (DateTimeParseException e) {
-                return ui.getDateFormatErrorMessage();
-            }
-
+            return handleDeadline(in);
         case EVENT:
-            try {
-                assert in.args.length >= 3 : "EVENT requires three arguments";
-                Task te = tasks.add(new Event(in.args[0],
-                        DateTimeUtil.parseDateTime(in.args[1]),
-                        DateTimeUtil.parseDateTime(in.args[2])));
-                storage.save(tasks);
-                return ui.getAddedMessage(te, tasks.size());
-            } catch (DateTimeParseException e) {
-                return ui.getDateFormatErrorMessage();
-            }
-
+            return handleEvent(in);
         case MARK:
-            assert in.args.length >= 1 : "MARK requires one argument";
-            try {
-                int mIndex = Integer.parseInt(in.args[0]);
-                Validator.validateInRange(mIndex, 1, tasks.size());
-                Task tm = tasks.mark(mIndex, true);
-                storage.save(tasks);
-                return ui.getMarkedMessage(tm, true);
-            } catch (MumboException e) {
-                return e.getMessage();
-            }
-
+            return handleMark(in);
         case UNMARK:
-            assert in.args.length >= 1 : "UNMARK requires one argument";
-            try {
-                int uIndex = Integer.parseInt(in.args[0]);
-                Validator.validateInRange(uIndex, 1, tasks.size());
-                Task tu = tasks.mark(uIndex, false);
-                storage.save(tasks);
-                return ui.getMarkedMessage(tu, false);
-            } catch (MumboException e) {
-                return e.getMessage();
-            }
-
+            return handleUnmark(in);
         case DELETE:
-            assert in.args.length >= 1 : "DELETE requires one argument";
-            try {
-                int idx = Integer.parseInt(in.args[0]);
-                Validator.validateInRange(idx, 1, tasks.size());
-                Task dt = tasks.delete(idx);
-                storage.save(tasks);
-                return ui.getDeletedMessage(dt, tasks.size());
-            } catch (MumboException e) {
-                return e.getMessage();
-            }
-
+            return handleDelete(in);
         case CLEAR:
-            tasks.clear();
-            storage.save(tasks);
-            return ui.getClearMessage();
-
+            return handleClear();
         case HELP:
-            return ui.getHelpMessage();
-
+            return handleHelp();
         case FIND:
-            assert in.args.length >= 1 : "FIND requires one argument";
-            TaskList matchingTasks = tasks.find(in.args[0]);
-            return ui.getFindMessage(matchingTasks);
-
+            return handleFind(in);
         case BYE:
-            if (tasks.isEmpty()) {
-                shouldExit = true;
-                return ui.getByeMessage();
-            } else {
-                isAwaitingByeConfirmation = true;
-                return ui.getClearCacheQuery(tasks.size());
-            }
-
+            return handleBye();
         case ERROR:
             return in.args[0];
-
         default:
             return "Sorry, I didn't quite catch that...\nTry typing 'help' to see possible commands";
+        }
+    }
+
+    // Private handler methods for each command:
+
+    private String handleByeConfirmation(String input) {
+        try {
+            boolean shouldClear = Validator.validateYesNo(input);
+            if (shouldClear) {
+                tasks.clear();
+                storage.save(tasks);
+                isAwaitingByeConfirmation = false;
+                shouldExit = true;
+                return ui.getClearedOnExitMessage();
+            } else {
+                isAwaitingByeConfirmation = false;
+                shouldExit = true;
+                return ui.getByeMessage();
+            }
+        } catch (MumboException e) {
+            return ui.getYesNoErrorMessage();
+        }
+    }
+
+    private String handleList() {
+        return ui.getListMessage(tasks);
+    }
+
+    private String handleTodo(ParsedInput in) {
+        assert in.args.length >= 1 : "TODO requires one argument";
+        Task t = tasks.add(new Todo(in.args[0]));
+        storage.save(tasks);
+        return ui.getAddedMessage(t, tasks.size());
+    }
+
+    private String handleDeadline(ParsedInput in) {
+        try {
+            assert in.args.length >= 2 : "DEADLINE requires two arguments";
+            Task td = tasks.add(new Deadline(in.args[0], DateTimeUtil.parseDateTime(in.args[1])));
+            storage.save(tasks);
+            return ui.getAddedMessage(td, tasks.size());
+        } catch (DateTimeParseException e) {
+            return ui.getDateFormatErrorMessage();
+        }
+    }
+
+    private String handleEvent(ParsedInput in) {
+        try {
+            assert in.args.length >= 3 : "EVENT requires three arguments";
+            Task te = tasks.add(new Event(in.args[0],
+                    DateTimeUtil.parseDateTime(in.args[1]),
+                    DateTimeUtil.parseDateTime(in.args[2])));
+            storage.save(tasks);
+            return ui.getAddedMessage(te, tasks.size());
+        } catch (DateTimeParseException e) {
+            return ui.getDateFormatErrorMessage();
+        }
+    }
+
+    private String handleMark(ParsedInput in) {
+        assert in.args.length >= 1 : "MARK requires one argument";
+        try {
+            int mIndex = Integer.parseInt(in.args[0]);
+            Validator.validateInRange(mIndex, 1, tasks.size());
+            Task tm = tasks.mark(mIndex, true);
+            storage.save(tasks);
+            return ui.getMarkedMessage(tm, true);
+        } catch (MumboException e) {
+            return e.getMessage();
+        }
+    }
+
+    private String handleUnmark(ParsedInput in) {
+        assert in.args.length >= 1 : "UNMARK requires one argument";
+        try {
+            int uIndex = Integer.parseInt(in.args[0]);
+            Validator.validateInRange(uIndex, 1, tasks.size());
+            Task tu = tasks.mark(uIndex, false);
+            storage.save(tasks);
+            return ui.getMarkedMessage(tu, false);
+        } catch (MumboException e) {
+            return e.getMessage();
+        }
+    }
+
+    private String handleDelete(ParsedInput in) {
+        assert in.args.length >= 1 : "DELETE requires one argument";
+        try {
+            int idx = Integer.parseInt(in.args[0]);
+            Validator.validateInRange(idx, 1, tasks.size());
+            Task dt = tasks.delete(idx);
+            storage.save(tasks);
+            return ui.getDeletedMessage(dt, tasks.size());
+        } catch (MumboException e) {
+            return e.getMessage();
+        }
+    }
+
+    private String handleClear() {
+        tasks.clear();
+        storage.save(tasks);
+        return ui.getClearMessage();
+    }
+
+    private String handleHelp() {
+        return ui.getHelpMessage();
+    }
+
+    private String handleFind(ParsedInput in) {
+        assert in.args.length >= 1 : "FIND requires one argument";
+        TaskList matchingTasks = tasks.find(in.args[0]);
+        return ui.getFindMessage(matchingTasks);
+    }
+
+    private String handleBye() {
+        if (tasks.isEmpty()) {
+            shouldExit = true;
+            return ui.getByeMessage();
+        } else {
+            isAwaitingByeConfirmation = true;
+            return ui.getClearCacheQuery(tasks.size());
         }
     }
 }
