@@ -27,10 +27,13 @@ public class MainWindow extends AnchorPane {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
     private Image mumboImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
 
+    /**
+     * Initializes the main window and binds the scroll pane to the dialog container height.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
-        
+
         // Show welcome message when GUI starts
         String welcomeMessage = "Hello, I'm Mumbo!\nWhat can I do for you?";
         dialogContainer.getChildren().add(
