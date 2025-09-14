@@ -114,6 +114,10 @@ public class Mumbo {
             return handleHelp();
         case FIND:
             return handleFind(in);
+        case FINDTAG:
+            return handleFindTag(in);
+        case TAG:
+            return handleTag(in);
         case BYE:
             return handleBye();
         case ERROR:
@@ -234,6 +238,12 @@ public class Mumbo {
         return ui.getFindMessage(matchingTasks);
     }
 
+    private String handleFindTag(ParsedInput in) {
+        assert in.args.length >= 1 : "FINDTAG requires one argument";
+        TaskList matchingTasks = tasks.findByTag(in.args[0]);
+        return ui.getFindMessage(matchingTasks);
+    }
+
     private String handleBye() {
         if (tasks.isEmpty()) {
             shouldExit = true;
@@ -241,6 +251,23 @@ public class Mumbo {
         } else {
             isAwaitingByeConfirmation = true;
             return ui.getClearCacheQuery(tasks.size());
+        }
+    }
+
+    private String handleTag(ParsedInput in) {
+        assert in.args.length >= 2 : "TAG requires two arguments";
+        try {
+            int tIndex = Integer.parseInt(in.args[0]);
+            Validator.validateInRange(tIndex, 1, tasks.size());
+            String tag = in.args[1].trim();
+            if (tag.isEmpty()) {
+                return "Tag cannot be empty.";
+            }
+            Task tt = tasks.tag(tIndex, tag);
+            storage.save(tasks);
+            return ui.getTaggedMessage(tt, tag);
+        } catch (MumboException e) {
+            return e.getMessage();
         }
     }
 }
