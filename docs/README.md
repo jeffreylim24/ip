@@ -19,22 +19,99 @@ Mumbo is a friendly, task-focused chatbot that helps you capture todos, deadline
 - Each message you send is echoed on the right; Mumbo replies on the left.
 - Tasks are saved automatically after every change. Restarting the app reloads your list from the previous session.
 
-## Command Reference
-| Command | Format | Example | Description |
-| --- | --- | --- | --- |
-| `list` | `list` | `list` | Show every task with its index and status. |
-| `todo` | `todo <description>` | `todo Read Effective Java` | Add a basic task with no date attached. |
-| `deadline` | `deadline <description> /by <date>` | `deadline Submit report /by 2024/09/30 17:00` | Add a task that is due on a specific date/time. |
-| `event` | `event <description> /from <start> /to <end>` | `event Team sync /from 15/05/2024 09:00 /to 15/05/2024 10:00` | Schedule an event with a start and end. |
-| `mark` | `mark <index>` | `mark 2` | Mark the indexed task as done. |
-| `unmark` | `unmark <index>` | `unmark 2` | Mark the indexed task as not done. |
-| `delete` | `delete <index>` | `delete 4` | Remove the indexed task permanently. |
-| `tag` | `tag <index> <tag>` | `tag 3 urgent` | Apply or replace a single tag on that task. |
-| `find` | `find <keyword>` | `find report` | List tasks whose descriptions contain the keyword (case-insensitive). |
-| `findtag` | `findtag <tag>` | `findtag urgent` | List tasks whose tag matches the query (case-insensitive). |
-| `clear` | `clear` | `clear` | Empty the entire task list immediately. |
-| `help` | `help` | `help` | Display the built-in command summary. |
-| `bye` | `bye` | `bye` | Initiate shutdown. If tasks remain, you will be asked whether to clear them first. |
+<h2>Command Reference</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Command</th>
+      <th>Format</th>
+      <th>Example</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>list</code></td>
+      <td><code>list</code></td>
+      <td><code>list</code></td>
+      <td>Show every task with its index and status.</td>
+    </tr>
+    <tr>
+      <td><code>todo</code></td>
+      <td><code>todo &lt;description&gt;</code></td>
+      <td><code>todo Read Effective Java</code></td>
+      <td>Add a basic task with no date attached.</td>
+    </tr>
+    <tr>
+      <td><code>deadline</code></td>
+      <td><code>deadline &lt;description&gt; /by &lt;date&gt;</code></td>
+      <td><code>deadline Submit report /by 2024/09/30 17:00</code></td>
+      <td>Add a task that is due on a specific date/time.</td>
+    </tr>
+    <tr>
+      <td><code>event</code></td>
+      <td><code>event &lt;description&gt; /from &lt;start&gt; /to &lt;end&gt;</code></td>
+      <td><code>event Team sync /from 15/05/2024 09:00 /to 15/05/2024 10:00</code></td>
+      <td>Schedule an event with a start and end.</td>
+    </tr>
+    <tr>
+      <td><code>mark</code></td>
+      <td><code>mark &lt;index&gt;</code></td>
+      <td><code>mark 2</code></td>
+      <td>Mark the indexed task as done.</td>
+    </tr>
+    <tr>
+      <td><code>unmark</code></td>
+      <td><code>unmark &lt;index&gt;</code></td>
+      <td><code>unmark 2</code></td>
+      <td>Mark the indexed task as not done.</td>
+    </tr>
+    <tr>
+      <td><code>delete</code></td>
+      <td><code>delete &lt;index&gt;</code></td>
+      <td><code>delete 4</code></td>
+      <td>Remove the indexed task permanently.</td>
+    </tr>
+    <tr>
+      <td><code>tag</code></td>
+      <td><code>tag &lt;index&gt; &lt;tag&gt;</code></td>
+      <td><code>tag 3 urgent</code></td>
+      <td>Apply or replace a single tag on that task.</td>
+    </tr>
+    <tr>
+      <td><code>find</code></td>
+      <td><code>find &lt;keyword&gt;</code></td>
+      <td><code>find report</code></td>
+      <td>List tasks whose descriptions contain the keyword (case-insensitive).</td>
+    </tr>
+    <tr>
+      <td><code>findtag</code></td>
+      <td><code>findtag &lt;tag&gt;</code></td>
+      <td><code>findtag urgent</code></td>
+      <td>List tasks whose tag matches the query (case-insensitive).</td>
+    </tr>
+    <tr>
+      <td><code>clear</code></td>
+      <td><code>clear</code></td>
+      <td><code>clear</code></td>
+      <td>Empty the entire task list immediately.</td>
+    </tr>
+    <tr>
+      <td><code>help</code></td>
+      <td><code>help</code></td>
+      <td><code>help</code></td>
+      <td>Display the built-in command summary.</td>
+    </tr>
+    <tr>
+      <td><code>bye</code></td>
+      <td><code>bye</code></td>
+      <td><code>bye</code></td>
+      <td>Initiate shutdown. If tasks remain, you will be asked whether to clear them first.</td>
+    </tr>
+  </tbody>
+</table>
+
 
 ## Date and Time Formats
 Mumbo accepts the following date/time patterns (24-hour clock):
