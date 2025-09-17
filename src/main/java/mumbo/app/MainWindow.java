@@ -25,8 +25,8 @@ public class MainWindow extends AnchorPane {
 
     private Mumbo mumbo;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
-    private Image mumboImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/UserPixelArt.png"));
+    private Image mumboImage = new Image(this.getClass().getResourceAsStream("/images/MumboPic.png"));
 
     /**
      * Initializes the main window and binds the scroll pane to the dialog container height.

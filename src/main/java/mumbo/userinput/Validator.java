@@ -19,15 +19,15 @@ public class Validator {
      */
     public static void validateInt(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Please specify which task.");
+            throw new MumboException("Do be so kind as to specify which task.");
         }
         try {
             int n = Integer.parseInt(s.trim());
             if (n <= 0) {
-                throw new MumboException("Index must be a positive integer (1, 2, 3, ...).");
+                throw new MumboException("The index ought to be a positive integer (1, 2, 3, ...).");
             }
         } catch (NumberFormatException e) {
-            throw new MumboException("That doesn't look like a number. Try something like: mark 2");
+            throw new MumboException("That does not appear to be a number. For example: mark 2");
         }
     }
 
@@ -38,7 +38,7 @@ public class Validator {
     public static void validateInRange(int s, int min, int max) {
         // Handle out-of-range gracefully even when the list is empty (max can be < min).
         if (s > max || s < min) {
-            throw new MumboException("That's out of range! You only have " + max + " tasks in the list.");
+            throw new MumboException("I'm afraid that is out of range; you have only " + max + " task(s) in the list.");
         }
     }
 
@@ -48,7 +48,7 @@ public class Validator {
      */
     public static void validateTodo(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Uh Oh! The description cannot be empty.");
+            throw new MumboException("I'm afraid the description cannot be empty.");
         }
     }
 
@@ -58,11 +58,11 @@ public class Validator {
      */
     public static void validateDeadline(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Uh Oh! The description cannot be empty.");
+            throw new MumboException("I'm afraid the description cannot be empty.");
         }
         String[] segments = s.split("\\s*/by\\s*", 2);
         if (segments.length < 2 || segments[0].isBlank() || segments[1].isBlank()) {
-            throw new MumboException("Please specify its deadline with /by <deadline>");
+            throw new MumboException("Pray specify its deadline with /by <deadline>.");
         }
     }
 
@@ -72,24 +72,24 @@ public class Validator {
      */
     public static void validateEvent(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Uh Oh! The description cannot be empty.");
+            throw new MumboException("I’m afraid the description cannot be empty.");
         }
         String[] by = s.split("\\s*/from\\s*", 2);
         if (by.length < 2 || by[0].isBlank()) {
-            throw new MumboException("Please specify event start with /from <start>");
+            throw new MumboException("Pray specify the event start with /from <start>.");
         }
         String[] range = by[1].split("\\s*/to\\s*", 2);
         if (range.length < 2 || range[0].isBlank() || range[1].isBlank()) {
-            throw new MumboException("Please specify event end with /to <end>");
+            throw new MumboException("Pray specify the event end with /to <end>.");
         }
         try {
             LocalDateTime start = DateTimeUtil.parseDateTime(range[0]);
             LocalDateTime end = DateTimeUtil.parseDateTime(range[1]);
             if (end.isBefore(start)) {
-                throw new MumboException("Oh no! The event can't end before it even starts!");
+                throw new MumboException("The event cannot conclude before it begins, I'm afraid.");
             }
         } catch (DateTimeParseException e) {
-            throw new MumboException(e.getMessage() + "\nPlease use one of the following formats:\n"
+            throw new MumboException("That date appears to be invalid.\nPlease use one of the following formats:\n"
                     + "1) yyyy/MM/dd\n"
                     + "2) yyyy/MM/dd HH:mm\n"
                     + "3) dd/MM/yyyy\n"
@@ -107,7 +107,7 @@ public class Validator {
         assert s != null : "Yes/No input must not be null";
         String s1 = s.trim().toLowerCase();
         if (!(s1.equals("y") || s1.equals("n") || s1.equals("yes") || s1.equals("no"))) {
-            throw new MumboException("Please type 'yes or 'no'.");
+            throw new MumboException("Kindly type 'yes' or 'no'.");
         }
         return s1.equals("y") || s1.equals("yes");
     }
@@ -119,7 +119,7 @@ public class Validator {
      */
     public static void validateFind(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Please specify a keyword to search for.");
+            throw new MumboException("Do kindly specify a keyword to search for.");
         }
     }
 
@@ -130,7 +130,7 @@ public class Validator {
      */
     public static void validateTag(String s) {
         if (s == null || s.isBlank()) {
-            throw new MumboException("Please specify which task and the tag name.");
+            throw new MumboException("Do be so kind as to specify the task index and the tag name.");
         }
         String[] segments = s.split("\\s+", 2);
         if (segments.length < 2 || segments[0].isBlank() || segments[1].isBlank()) {
@@ -139,7 +139,7 @@ public class Validator {
         try {
             validateInt(segments[0]);
         } catch (MumboException e) {
-            throw new MumboException("The task index must be a positive integer (1, 2, 3, ...).");
+            throw new MumboException("The task index ought to be a positive integer (1, 2, 3, ...).");
         }
     }
 }

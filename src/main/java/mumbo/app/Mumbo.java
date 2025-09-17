@@ -123,7 +123,7 @@ public class Mumbo {
         case ERROR:
             return in.args[0];
         default:
-            return "Sorry, I didn't quite catch that...\nTry typing 'help' to see possible commands";
+            return "Pardon me; I did not quite catch that.\nYou may type 'help' to see the available commands.";
         }
     }
 
@@ -261,7 +261,7 @@ public class Mumbo {
             Validator.validateInRange(tIndex, 1, tasks.size());
             String tag = in.args[1].trim();
             if (tag.isEmpty()) {
-                return "Tag cannot be empty.";
+                return "The tag cannot be empty, I'm afraid.";
             }
             Task tt = tasks.tag(tIndex, tag);
             storage.save(tasks);
