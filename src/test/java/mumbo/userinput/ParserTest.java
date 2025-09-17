@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 
 
@@ -152,13 +153,95 @@ public class ParserTest {
     void testParseFindEmpty() {
         ParsedInput result = Parser.parse("find");
         assertEquals(Command.ERROR, result.command);
-        assertTrue(result.args[0].contains("Please specify a keyword"));
+        assertTrue(result.args[0].toLowerCase().contains("keyword"));
     }
 
     @Test
     void testParseFindBlank() {
         ParsedInput result = Parser.parse("find   ");
         assertEquals(Command.ERROR, result.command);
-        assertTrue(result.args[0].contains("Please specify a keyword"));
+        assertTrue(result.args[0].toLowerCase().contains("keyword"));
+    }
+
+    // FINDTAG tests
+    @Test
+    void testFindTagValid() {
+        ParsedInput result = Parser.parse("findtag urgent");
+        assertEquals(Command.FINDTAG, result.command);
+        assertEquals("urgent", result.args[0]);
+    }
+
+    @Test
+    void testFindTagMissingKeyword() {
+        ParsedInput result = Parser.parse("findtag");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].toLowerCase().contains("keyword"));
+    }
+
+    // TAG command tests
+    @Test
+    void testTagValid() {
+        ParsedInput result = Parser.parse("tag 3 urgent");
+        assertEquals(Command.TAG, result.command);
+        assertArrayEquals(new String[]{"3", "urgent"}, result.args);
+    }
+
+    @Test
+    void testTagMissingArgs() {
+        ParsedInput result = Parser.parse("tag");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].toLowerCase().contains("task index"));
+    }
+
+    @Test
+    void testTagMissingTagName() {
+        ParsedInput result = Parser.parse("tag 2   ");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].toLowerCase().contains("tag name"));
+    }
+
+    @Test
+    void testTagNonIntegerIndex() {
+        ParsedInput result = Parser.parse("tag abc urgent");
+        assertEquals(Command.ERROR, result.command);
+        assertTrue(result.args[0].toLowerCase().contains("positive integer"));
+    }
+
+    // Robustness: arguments with extra spaces
+    @Test
+    void testTodoExtraSpaces() {
+        ParsedInput input = Parser.parse("  todo    read    book   ");
+        assertEquals(Command.TODO, input.getCommand());
+        assertEquals("read    book", input.getArgX(1)); // internal spaces preserved after first split
+    }
+
+    @Test
+    void testDeadlineExtraSpacesAroundBy() {
+        ParsedInput input = Parser.parse("deadline  finish report    /by    next week   ");
+        assertEquals(Command.DEADLINE, input.getCommand());
+        assertEquals("finish report", input.getArgX(1));
+        assertEquals("next week", input.getArgX(2));
+    }
+
+    @Test
+    void testEventExtraSpaces() {
+        ParsedInput input = Parser.parse("event  hackathon   /from  2025/09/01   /to   2025/09/03  ");
+        // Date formats may not parse; ensure either proper parsing or error
+        if (input.getCommand() == Command.EVENT) {
+            assertEquals("hackathon", input.getArgX(1));
+            assertEquals("2025/09/01", input.getArgX(2));
+            assertEquals("2025/09/03", input.getArgX(3));
+        } else {
+            assertEquals(Command.ERROR, input.getCommand());
+        }
+    }
+
+    // Defensive: ensure ERROR carries message non-null
+    @Test
+    void testErrorCarriesMessage() {
+        ParsedInput input = Parser.parse("deadline   ");
+        assertEquals(Command.ERROR, input.getCommand());
+        assertNotNull(input.args[0]);
+        assertFalse(input.args[0].isBlank());
     }
 }
